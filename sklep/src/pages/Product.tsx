@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import AddToCart from "../components/AddToCart";
-import Comments from "../components/Comments";
+import Reviews from "../components/Reviews";
 
 interface Product {
   id: number;
@@ -93,7 +93,7 @@ const Product = () => {
           </div>
         </div>
       </div>
-      <Comments />
+      <Reviews productId={product.id} />
       <div className="text-center mt-4">
         <Link to={"/"} className="btn btn-secondary">
           Powrót do strony głównej
