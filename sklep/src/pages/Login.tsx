@@ -1,54 +1,36 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { login } from "../api/auth/authService";
 
 function Login() {
   const [password, setPassword] = useState("");
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [error, setError] = useState("");
   const [isButtonDisabled, setButtonDisabled] = useState(true);
-
   const navigate = useNavigate();
 
-  const handleUsernameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setUsername(event.target.value);
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const { token } = await login(email, password);
+      localStorage.setItem("authToken", token);
+      setError("");
+      navigate("/");
+    } catch (err: any) {
+      setError(err.response?.data?.error || "Wystąpił błąd podczas logowania.");
+    }
+  };
+
+  const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setEmail(event.target.value);
   };
 
   const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(event.target.value);
   };
 
-  const validatePassword = (expectedPassword: string) => {
-    if (password === expectedPassword) {
-      setError("Zalogowano pomyślnie!");
-      navigate("/");
-    } else {
-      setError("Hasło jest nieprawidłowe.");
-    }
-  };
-
-  const validateUsername = () => {
-    const usersData = localStorage.getItem("users");
-
-    if (usersData) {
-      const usersArray = JSON.parse(usersData);
-
-      const existingUser = usersArray.find(
-        (user: { login: string; email: string }) =>
-          user.login === username || user.email === username
-      );
-
-      if (existingUser) {
-        validatePassword(existingUser.password);
-      } else {
-        setError("Nie ma takiego użytkownika...");
-      }
-    } else {
-      setError("Brak zapisanych użytkowników w systemie.");
-    }
-  };
-
-  const validateInformation = () => {
-    if (!password || !username) {
+  const validateInput = () => {
+    if (!email || !password) {
       setButtonDisabled(true);
     } else {
       setButtonDisabled(false);
@@ -56,8 +38,8 @@ function Login() {
   };
 
   React.useEffect(() => {
-    validateInformation();
-  }, [password, username]);
+    validateInput();
+  }, [password, email]);
 
   return (
     <div className="container mt-5">
@@ -71,7 +53,7 @@ function Login() {
             borderRadius: "10px",
           }}
         >
-          <form>
+          <form onSubmit={handleLogin}>
             <div className="mb-3">
               <label htmlFor="username" className="form-label">
                 Nazwa użytkownika lub e-mail
@@ -79,8 +61,8 @@ function Login() {
               <input
                 type="text"
                 id="username"
-                value={username}
-                onChange={handleUsernameChange}
+                value={email}
+                onChange={handleEmailChange}
                 className="form-control"
                 placeholder="Login lub e-mail"
               />
@@ -99,9 +81,8 @@ function Login() {
               />
             </div>
             <button
-              type="button"
+              type="submit"
               disabled={isButtonDisabled}
-              onClick={validateUsername}
               className="btn btn-primary w-100"
             >
               Zaloguj
