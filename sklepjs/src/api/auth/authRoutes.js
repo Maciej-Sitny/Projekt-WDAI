@@ -36,5 +36,4 @@ router.post("/api/login", async (req, res) => {
   }
 });
 
-// Eksport routera
-module.exports = router; // Zmieniamy eksport na CommonJS
+module.exports = router;

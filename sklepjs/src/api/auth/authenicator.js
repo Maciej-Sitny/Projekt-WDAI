@@ -18,4 +18,4 @@ function authenticateToken(req, res, next) {
   }
 }
 
-module.exports = { authenticateToken }; // Zmieniamy na export w CommonJS
+module.exports = { authenticateToken };
