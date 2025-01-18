@@ -1,4 +1,5 @@
-const { Router } = require("express");
+import { Router } from "express";
+import { register, loginUser } from "./authService.js"; // Upewnij się, że używasz poprawnego rozszerzenia ".js"
 
 const router = Router();
 
@@ -23,17 +24,28 @@ router.post("/api/register", async (req, res) => {
 router.post("/api/login", async (req, res) => {
   const { email, password } = req.body;
 
+  // Validate the incoming data
   if (!email || !password) {
-    res.status(400).send("Brak wymaganych danych wejściowych.");
-    return;
+    return res.status(400).send("Brak wymaganych danych wejściowych."); // Missing credentials
   }
 
   try {
-    const { token } = await login(email, password);
+    // Assume `loginUser` validates the email and password and generates a token if successful
+    const { token } = await loginUser(email, password);
+
+    if (!token) {
+      // In case the login failed (invalid credentials)
+      return res.status(401).send("Nieprawidłowy e-mail lub hasło."); // Invalid email or password
+    }
+
+    // Send back the token
     res.json({ token });
   } catch (error) {
-    res.status(401).send(error.message);
+    console.error(error); // Log error for debugging
+
+    // In case of other errors (e.g., server error, database issues)
+    res.status(500).send("Wystąpił błąd serwera. Spróbuj ponownie później.");
   }
 });
 
-module.exports = router;
+export default router;

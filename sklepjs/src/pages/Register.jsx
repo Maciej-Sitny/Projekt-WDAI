@@ -4,17 +4,12 @@ import { Link } from "react-router-dom";
 function Register() {
   const [password, setPassword] = useState("");
   const [repeatPassword, setRepeatPassword] = useState("");
-  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
   const [isButtonDisabled, setButtonDisabled] = useState(true);
 
   const handleEmailChange = (event) => {
     setEmail(event.target.value);
-  };
-
-  const handleUsernameChange = (event) => {
-    setUsername(event.target.value);
   };
 
   const handlePasswordChange = (event) => {
@@ -41,7 +36,9 @@ function Register() {
     return emailRegex.test(email);
   };
 
-  const validatePasswords = () => {
+  const validatePasswords = async () => {
+    setError("");
+
     if (!isEmailValid(email)) {
       setError("Nieprawidłowy adres e-mail.");
       return;
@@ -59,28 +56,44 @@ function Register() {
       return;
     }
 
-    saveUser();
+    await registerUser();
   };
 
-  const saveUser = () => {
-    const usersData = localStorage.getItem("users");
-    const usersArray = usersData ? JSON.parse(usersData) : [];
-    const existingUser = usersArray.find((user) => user.email === email);
+  const registerUser = async () => {
+    console.log({ email, password });
+    try {
+      const response = await fetch("http://localhost:3000/api/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email,
+          password,
+        }),
+      });
 
-    if (existingUser) {
-      setError("Użytkownik o podanym adresie e-mail już istnieje.");
-      return;
+      if (!response.ok) {
+        const errorText = await response.text();
+        const errorData = errorText ? JSON.parse(errorText) : {};
+        throw new Error(errorData.error || "Rejestracja nie powiodła się.");
+      }
+
+      const responseText = await response.text();
+      const data = responseText ? JSON.parse(responseText) : null;
+
+      if (data && data.id) {
+        setError("Zarejestrowano pomyślnie!");
+      } else {
+        setError("Zarejestrowano pomyślnie!");
+      }
+    } catch (error) {
+      setError(error.message);
     }
-
-    const newUser = { username, email, password };
-    usersArray.push(newUser);
-    localStorage.setItem("users", JSON.stringify(usersArray));
-
-    setError("Zarejestrowano pomyślnie!");
   };
 
   const validateInformation = () => {
-    if (!password || !repeatPassword || !username || !email) {
+    if (!password || !repeatPassword || !email) {
       setButtonDisabled(true);
     } else {
       setButtonDisabled(false);
@@ -89,7 +102,7 @@ function Register() {
 
   React.useEffect(() => {
     validateInformation();
-  }, [password, repeatPassword, username, email]);
+  }, [password, repeatPassword, email]);
 
   return (
     <div className="container mt-5">
@@ -117,19 +130,7 @@ function Register() {
                 placeholder="Wpisz adres e-mail"
               />
             </div>
-            <div className="mb-3">
-              <label htmlFor="username" className="form-label">
-                Nazwa użytkownika
-              </label>
-              <input
-                type="text"
-                id="username"
-                value={username}
-                onChange={handleUsernameChange}
-                className="form-control"
-                placeholder="Wpisz nazwę użytkownika"
-              />
-            </div>
+
             <div className="mb-3">
               <label htmlFor="password" className="form-label">
                 Hasło
@@ -167,9 +168,10 @@ function Register() {
           </form>
           <div
             className={`mt-3 ${
-              error === "Zarejestrowano pomyślnie!"
+              error === "Zarejestrowano pomyślnie!" ||
+              error.startsWith("Zarejestrowano pomyślnie") // Success
                 ? "text-success"
-                : "text-danger"
+                : "text-danger" // Error
             }`}
           >
             {error}
