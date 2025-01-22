@@ -1,19 +1,20 @@
 import express from "express";
-import router from "./authRoutes.js";
+import { json } from "express";
+import router from "./reviewRoutes.js";
 import sequelize from "./database.js";
 import cors from "cors";
 
 const app = express();
-const PORT = 3001;
+const PORT = 4002;
 
 app.use(cors());
-app.use(express.json());
+app.use(json());
 app.use("/api", router);
 
 sequelize.sync({ force: false }).then(() => {
-  console.log("Baza danych zsynchronizowana!");
+  console.log("Baza danych opinii zsynchronizowana!");
 });
 
 app.listen(PORT, () => {
-  console.log(`Serwer działa na porcie ${PORT}`);
+  console.log(`Serwer opinii działa na porcie ${PORT}`);
 });

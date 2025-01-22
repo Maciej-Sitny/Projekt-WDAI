@@ -1,13 +1,13 @@
 import express from "express";
-import router from "./authRoutes.js";
+import { json } from "express";
+import router from "./orderRoutes.js";
 import sequelize from "./database.js";
-import cors from "cors";
 
 const app = express();
-const PORT = 3001;
+const PORT = 4000;
 
-app.use(cors());
-app.use(express.json());
+app.use(json());
+app.use(router);
 app.use("/api", router);
 
 sequelize.sync({ force: false }).then(() => {

@@ -12,7 +12,7 @@ function Login() {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:3000/api/login", {
+      const response = await axios.post("http://localhost:3001/api/login", {
         email,
         password,
       });
@@ -21,7 +21,7 @@ function Login() {
       setError("");
       navigate("/");
     } catch (err) {
-      setError(err.response?.data?.error || "Wystąpił błąd podczas logowania.");
+      setError(err.response?.data?.Error || "Nieprawidłowe dane wejściowe.");
     }
   };
 

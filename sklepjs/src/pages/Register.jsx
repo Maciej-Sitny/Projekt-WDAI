@@ -2,11 +2,21 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
 function Register() {
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [password, setPassword] = useState("");
   const [repeatPassword, setRepeatPassword] = useState("");
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
   const [isButtonDisabled, setButtonDisabled] = useState(true);
+
+  const handleFirstNameChange = (event) => {
+    setFirstName(event.target.value);
+  };
+
+  const handleLastNameChange = (event) => {
+    setLastName(event.target.value);
+  };
 
   const handleEmailChange = (event) => {
     setEmail(event.target.value);
@@ -60,9 +70,9 @@ function Register() {
   };
 
   const registerUser = async () => {
-    console.log({ email, password });
+    console.log({ firstName, lastName, email, password });
     try {
-      const response = await fetch("http://localhost:3000/api/register", {
+      const response = await fetch("http://localhost:3001/api/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -70,6 +80,8 @@ function Register() {
         body: JSON.stringify({
           email,
           password,
+          firstName,
+          lastName,
         }),
       });
 
@@ -93,7 +105,7 @@ function Register() {
   };
 
   const validateInformation = () => {
-    if (!password || !repeatPassword || !email) {
+    if (!firstName || !lastName || !password || !repeatPassword || !email) {
       setButtonDisabled(true);
     } else {
       setButtonDisabled(false);
@@ -102,7 +114,7 @@ function Register() {
 
   React.useEffect(() => {
     validateInformation();
-  }, [password, repeatPassword, email]);
+  }, [firstName, lastName, password, repeatPassword, email]);
 
   return (
     <div className="container mt-5">
@@ -117,6 +129,32 @@ function Register() {
           }}
         >
           <form>
+            <div className="mb-3">
+              <label htmlFor="firstName" className="form-label">
+                Imię
+              </label>
+              <input
+                type="text"
+                id="firstName"
+                value={firstName}
+                onChange={handleFirstNameChange}
+                className="form-control"
+                placeholder="Wpisz imię"
+              />
+            </div>
+            <div className="mb-3">
+              <label htmlFor="lastName" className="form-label">
+                Nazwisko
+              </label>
+              <input
+                type="text"
+                id="lastName"
+                value={lastName}
+                onChange={handleLastNameChange}
+                className="form-control"
+                placeholder="Wpisz nazwisko"
+              />
+            </div>
             <div className="mb-3">
               <label htmlFor="email" className="form-label">
                 Adres e-mail

@@ -1,18 +1,21 @@
 import React, { useEffect, useState } from "react";
 import Review from "./Review";
+import AddReview from "./AddReview";
+import { useParams } from "react-router-dom";
 
-const Reviews = ({ productId }) => {
+const Reviews = () => {
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
+  const productId = useParams();
 
   useEffect(() => {
     const fetchReviews = async () => {
       try {
         const response = await fetch(
-          `https://dummyjson.com/products/${productId}`
+          `http://localhost:4002/api/reviews/${productId.id}`
         );
         const data = await response.json();
-        setReviews(data.reviews);
+        setReviews(data);
       } catch (error) {
         console.error("Błąd podczas pobierania opinii:", error);
       } finally {
@@ -42,15 +45,18 @@ const Reviews = ({ productId }) => {
         ) : (
           reviews.map((review, index) => (
             <div key={index} className="col-md-6 col-lg-4 mb-4">
-              <div className="card shadow-sm">
-                <div className="card-body">
-                  <Review key={index} {...review} />
-                </div>
-              </div>
+              <Review
+                firstName={review.firstName}
+                lastName={review.lastName}
+                rating={review.rating}
+                comment={review.comment}
+                date={review.date}
+              />
             </div>
           ))
         )}
       </div>
+      <AddReview />
     </div>
   );
 };

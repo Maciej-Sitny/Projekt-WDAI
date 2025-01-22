@@ -3,36 +3,64 @@ import pkg from "bcryptjs";
 const { hash, compare } = pkg;
 const { sign } = jwt;
 import User from "./user.js";
+import dotenv from "dotenv";
 
-const SECRET_KEY = "7s2kFJvL3nMeQ8R1Pz0XyW4vT9gB6dCjH5aN1mOoV2k";
+dotenv.config();
 
-export const register = async ({ email, password }) => {
-  // Zakładam, że 'findOne' sprawdza bazę danych użytkowników
-  const existingUser = await User.findOne({ where: { email } });
-  if (existingUser) {
-    throw new Error("E-mail jest już zarejestrowany.");
+const SECRET_KEY = process.env.SECRET_KEY || "default_secret_key";
+
+export const register = async ({ email, password, firstName, lastName }) => {
+  try {
+    const existingUser = await User.findOne({ where: { email } });
+    if (existingUser) {
+      throw new Error("E-mail is already registered.");
+    }
+
+    const hashedPassword = await hash(password, 10);
+    const newUser = await User.create({
+      email,
+      password: hashedPassword,
+      firstName,
+      lastName,
+    });
+    return newUser;
+  } catch (error) {
+    throw new Error(`Registration failed: ${error.message}`);
   }
-
-  const hashedPassword = await hash(password, 10);
-  const newUser = await User.create({ email, password: hashedPassword });
-  return newUser;
 };
 
 export const loginUser = async (email, password) => {
-  const user = await User.findOne({ where: { email } });
-  if (!user) {
-    throw new Error("Nieprawidłowy e-mail lub hasło.");
+  try {
+    const user = await User.findOne({ where: { email } });
+    if (!user) {
+      throw new Error("Invalid email or password.");
+    }
+
+    const isPasswordValid = await compare(password, user.password);
+    if (!isPasswordValid) {
+      throw new Error("Invalid email or password.");
+    }
+
+    const token = sign({ id: user.id, email: user.email }, SECRET_KEY, {
+      expiresIn: "1h",
+    });
+
+    return { token };
+  } catch (error) {
+    throw new Error(`Login failed: ${error.message}`);
   }
+};
 
-  const isPasswordValid = await compare(password, user.password);
-  if (!isPasswordValid) {
-    throw new Error("Nieprawidłowy e-mail lub hasło.");
+export const getUserDetails = async (userId) => {
+  try {
+    const user = await User.findByPk(userId, {
+      attributes: { exclude: ["password"] },
+    });
+    if (!user) {
+      throw new Error("User not found.");
+    }
+    return user;
+  } catch (error) {
+    throw new Error(`Failed to get user details: ${error.message}`);
   }
-
-  // Generowanie tokenu JWT
-  const token = sign({ id: user.id, email: user.email }, SECRET_KEY, {
-    expiresIn: "1h",
-  });
-
-  return { token };
 };
