@@ -11,7 +11,9 @@ const Product = () => {
     const fetchProduct = async () => {
       try {
         if (id) {
-          const response = await fetch(`https://dummyjson.com/products/${id}`);
+          const response = await fetch(
+            `https://fakestoreapi.com/products/${id}`
+          );
           const data = await response.json();
           setProduct(data);
         }
@@ -39,7 +41,7 @@ const Product = () => {
         <div className="row g-0">
           <div className="col-md-5 text-center p-3">
             <img
-              src={product.thumbnail}
+              src={product.image}
               alt={product.title}
               className="img-fluid rounded"
               style={{ maxWidth: "300px" }}
@@ -53,23 +55,10 @@ const Product = () => {
                 <strong>Cena:</strong> {product.price} zł
               </p>
               <p className="card-text">
-                <strong>Ocena:</strong> {product.rating}
+                <strong>Ocena:</strong> {product.rating.rate}
               </p>
               <p className="card-text">
-                <strong>Stan:</strong> {product.stock}
-              </p>
-              <p className="card-text">
-                <strong>Marka:</strong> {product.brand}
-              </p>
-              <p className="card-text">
-                <strong>Dostępność:</strong> {product.availabilityStatus}
-              </p>
-              <p className="card-text">
-                <strong>Polityka zwrotów:</strong> {product.returnPolicy}
-              </p>
-              <p className="card-text">
-                <strong>Informacje o dostawie:</strong>{" "}
-                {product.shippingInformation}
+                <strong>Ilość opinii:</strong> {product.rating.count}
               </p>
               <AddToCart product={{ id: product.id, quantity: 1 }} />
             </div>

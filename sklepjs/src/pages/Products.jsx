@@ -11,10 +11,10 @@ const Products = () => {
       try {
         if (category) {
           const response = await fetch(
-            `https://dummyjson.com/products/category/${category}`
+            `https://fakestoreapi.com/products/category/${category}`
           );
           const data = await response.json();
-          setProducts(data.products);
+          setProducts(data);
         }
       } catch (error) {
         console.error("Błąd podczas pobierania danych:", error);
@@ -31,7 +31,7 @@ const Products = () => {
           <div className="col-md-6 col-lg-4" key={product.id}>
             <div className="card h-100 shadow-sm">
               <img
-                src={product.thumbnail}
+                src={product.image}
                 alt={product.title}
                 className="card-img-top"
                 style={{ maxHeight: "200px", objectFit: "cover" }}
@@ -40,13 +40,13 @@ const Products = () => {
                 <h5 className="card-title">{product.title}</h5>
                 <p className="card-text text-muted">{product.description}</p>
                 <p className="mb-1">
-                  <strong>Cena:</strong> {product.price} zł
+                  <strong>Cena:</strong> {product.price} USD
                 </p>
                 <p className="mb-1">
-                  <strong>Ocena:</strong> {product.rating}
+                  <strong>Ocena:</strong> {product.rating.rate}
                 </p>
                 <p className="mb-3">
-                  <strong>Stan:</strong> {product.stock}
+                  <strong>Ilość ocen:</strong> {product.rating.count}
                 </p>
                 <Link
                   to={`/products/${product.id}`}
