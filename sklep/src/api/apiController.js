@@ -8,6 +8,10 @@ import {
   getCart as getCartService,
   deleteCartItem as deleteCartItemService,
   clearCart as clearCartService,
+  addReview as addReviewService,
+  getReviews as getReviewsService,
+  deleteReview as deleteReviewService,
+  editReview as editReviewService, // Import the editReview service
 } from "./apiService.js";
 
 // apiController.js
@@ -116,5 +120,60 @@ export const clearCart = async (req, res) => {
     res
       .status(500)
       .json({ message: "Error clearing cart", error: error.message });
+  }
+};
+
+// Reviews routes
+export const addReview = async (req, res) => {
+  try {
+    const reviewData = req.body;
+    const data = await addReviewService(reviewData);
+    res.status(201).json(data);
+  } catch (error) {
+    if (error.message === "User has already reviewed this product") {
+      res.status(400).json({ message: error.message });
+    } else {
+      res
+        .status(500)
+        .json({ message: "Error adding review", error: error.message });
+    }
+  }
+};
+
+export const getReviews = async (req, res) => {
+  try {
+    const { productId } = req.params;
+    const data = await getReviewsService(productId);
+    res.status(200).json(data);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error fetching reviews", error: error.message });
+  }
+};
+
+export const deleteReview = async (req, res) => {
+  try {
+    const { reviewId } = req.params;
+    const data = await deleteReviewService(reviewId);
+    res.status(200).json(data);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error deleting review", error: error.message });
+  }
+};
+
+// Add the editReview function
+export const editReview = async (req, res) => {
+  try {
+    const { reviewId } = req.params;
+    const reviewData = req.body;
+    const data = await editReviewService(reviewId, reviewData);
+    res.status(200).json(data);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error editing review", error: error.message });
   }
 };

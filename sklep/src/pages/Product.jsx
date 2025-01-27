@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
+import Reviews from "../components/Reviews";
 import AddToCart from "../components/AddToCart";
 
 const Product = () => {
@@ -68,6 +69,7 @@ const Product = () => {
         <Link to={"/"} className="btn btn-secondary">
           Powrót do strony głównej
         </Link>
+        <Reviews />
       </div>
     </div>
   );

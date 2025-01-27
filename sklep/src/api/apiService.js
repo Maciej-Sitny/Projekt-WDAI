@@ -1,4 +1,4 @@
-import { User, Order, Cart } from "./apiModel.js";
+import { User, Order, Cart, Review } from "./apiModel.js";
 import jwt from "jsonwebtoken";
 
 const SECRET_KEY = "7s2kFJvL3nMeQ8R1Pz0XyW4vT9gB6dCjH5aN1mOoV2k";
@@ -115,6 +115,72 @@ export const clearCart = async (userId) => {
     return { message: "Cart cleared successfully" };
   } catch (error) {
     console.error(`Error clearing cart for user with ID ${userId}:`, error);
+    throw error;
+  }
+};
+
+// Reviews functionality
+export const checkUserReview = async (userId, productId) => {
+  try {
+    const review = await Review.findOne({ where: { userId, productId } });
+    return review !== null;
+  } catch (error) {
+    console.error("Error checking user review:", error);
+    throw error;
+  }
+};
+
+export const addReview = async (reviewData) => {
+  try {
+    const { userId, productId } = reviewData;
+    const hasReview = await checkUserReview(userId, productId);
+    if (hasReview) {
+      throw new Error("User has already reviewed this product");
+    }
+    const newReview = await Review.create(reviewData);
+    return newReview;
+  } catch (error) {
+    console.error("Error adding review:", error);
+    throw error;
+  }
+};
+
+export const getReviews = async (productId) => {
+  try {
+    const reviews = await Review.findAll({ where: { productId } });
+    return reviews;
+  } catch (error) {
+    console.error(
+      `Error fetching reviews for product with ID ${productId}:`,
+      error
+    );
+    throw error;
+  }
+};
+
+export const deleteReview = async (reviewId) => {
+  try {
+    const result = await Review.destroy({ where: { id: reviewId } });
+    if (result === 0) {
+      throw new Error(`Review with ID ${reviewId} not found`);
+    }
+    return { message: "Review deleted successfully" };
+  } catch (error) {
+    console.error(`Error deleting review with ID ${reviewId}:`, error);
+    throw error;
+  }
+};
+
+// Add the editReview function
+export const editReview = async (reviewId, reviewData) => {
+  try {
+    const review = await Review.findByPk(reviewId);
+    if (!review) throw new Error(`Review with ID ${reviewId} not found`);
+
+    await review.update(reviewData);
+    return review;
+  } catch (error) {
+    console.error(`Error editing review with ID ${reviewId}:`, error);
     throw error;
   }
 };
