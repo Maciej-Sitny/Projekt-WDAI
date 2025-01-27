@@ -36,7 +36,8 @@ export const register = async (req, res) => {
 
 export const getAllOrders = async (req, res) => {
   try {
-    const data = await getAllOrdersService();
+    const userId = req.params;
+    const data = await getAllOrdersService(userId);
     res.status(200).json(data);
   } catch (error) {
     res

@@ -29,11 +29,14 @@ const Orders = () => {
       }
 
       try {
-        const response = await fetch(`http://localhost:5000/api/orders`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await fetch(
+          `http://localhost:5000/api/orders/${userId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
         if (!response.ok) {
           throw new Error("Failed to fetch orders.");

@@ -18,7 +18,7 @@ router.post("/login", login);
 router.post("/register", register);
 
 // Orders routes
-router.get("/orders", authMiddleware, getAllOrders);
+router.get("/orders/:userId", authMiddleware, getAllOrders);
 router.get("/orders/:id", authMiddleware, getOrderById);
 router.post("/orders", authMiddleware, createOrder);
 

@@ -31,12 +31,12 @@ export const register = async (userData) => {
   }
 };
 
-export const getAllOrders = async () => {
+export const getAllOrders = async (userId) => {
   try {
-    const orders = await Order.findAll();
+    const orders = await Order.findAll({ where: userId });
     return orders;
   } catch (error) {
-    console.error("Error fetching orders:", error);
+    console.error(`Error fetching orders for user with ID ${userId}:`, error);
     throw error;
   }
 };
