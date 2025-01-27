@@ -69,7 +69,7 @@ const AddReview = () => {
       <h4 className="text-primary">Dodaj opinię</h4>
       {editMode && (
         <div className="alert alert-warning" role="alert">
-          You are in edit mode.
+          Jesteś w trybie edycji
         </div>
       )}
       {error && (
