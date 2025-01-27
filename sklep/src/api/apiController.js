@@ -166,9 +166,9 @@ export const deleteReview = async (req, res) => {
 
 export const editReview = async (req, res) => {
   try {
-    const { reviewId } = req.params;
+    const { userId, productId } = req.params;
     const reviewData = req.body;
-    const data = await editReviewService(reviewId, reviewData);
+    const data = await editReviewService(userId, productId, reviewData);
     res.status(200).json(data);
   } catch (error) {
     res

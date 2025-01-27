@@ -8,71 +8,75 @@ const AddReview = () => {
   const { id: productId } = useParams();
   const [userId, setUserId] = useState(0);
   const [username, setUsername] = useState("");
-
-  const getUserIdFromToken = (token) => {
-    try {
-      const decoded = jwtDecode(token);
-      return decoded.id;
-    } catch (error) {
-      console.error("Error decoding token:", error);
-    }
-  };
-
-  const getUsernameFromToken = (token) => {
-    try {
-      const decoded = jwtDecode(token);
-      return decoded.email.split("@")[0]; // Assuming username is part of the email
-    } catch (error) {
-      console.error("Error decoding token:", error);
-    }
-  };
+  const [editMode, setEditMode] = useState(false);
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    const fetchUserData = async () => {
-      const token = localStorage.getItem("authToken");
-      const userId = getUserIdFromToken(token);
-      const username = getUsernameFromToken(token);
-      setUserId(userId);
-      setUsername(username);
-    };
-
-    fetchUserData();
+    const token = localStorage.getItem("authToken");
+    if (token) {
+      const decoded = jwtDecode(token);
+      setUserId(decoded.id);
+      setUsername(decoded.email.split("@")[0]);
+    }
   }, [productId]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (comment) {
-      const response = await fetch("http://localhost:5000/api/reviews", {
-        method: "POST",
+    if (!comment) return;
+
+    // Check if the user has already submitted a review for this product
+    const existingReviewResponse = await fetch(
+      `http://localhost:5000/api/reviews/${userId}/${productId}`,
+      {
         headers: {
-          "Content-Type": "application/json",
           Authorization: `Bearer ${localStorage.getItem("authToken")}`,
         },
-        body: JSON.stringify({
-          userId,
-          username,
-          rating,
-          comment,
-          productId,
-        }),
-      });
+      }
+    );
 
-      if (!response.ok) {
-        console.error("Failed to submit review");
+    if (existingReviewResponse.ok) {
+      const existingReview = await existingReviewResponse.json();
+      if (existingReview) {
+        setError("You can only submit one review per product.");
         return;
       }
+    }
 
-      const data = await response.json();
-      console.log("Review submitted successfully:", data);
+    const url = editMode
+      ? `http://localhost:5000/api/reviews/${userId}/${productId}`
+      : "http://localhost:5000/api/reviews";
+    const method = editMode ? "PUT" : "POST";
+
+    const response = await fetch(url, {
+      method,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+      },
+      body: JSON.stringify({ userId, username, rating, comment, productId }),
+    });
+
+    if (response.ok) {
+      console.log("Review submitted successfully:", await response.json());
       window.location.reload();
+    } else {
+      setError("Można dodać tylko jedną opinię na produkt.");
     }
   };
 
   return (
     <form className="mt-4" onSubmit={handleSubmit}>
       <h4 className="text-primary">Dodaj opinię</h4>
-
-      {/* Pole komentarza */}
+      {editMode && (
+        <div className="alert alert-warning" role="alert">
+          You are in edit mode.
+        </div>
+      )}
+      {error && (
+        <div className="alert alert-danger" role="alert">
+          {error}
+        </div>
+      )}
       <div className="mb-3">
         <label htmlFor="comment" className="form-label fw-bold">
           Komentarz:
@@ -87,8 +91,6 @@ const AddReview = () => {
           required
         ></textarea>
       </div>
-
-      {/* Wybór oceny */}
       <div className="mb-3">
         <label htmlFor="rating" className="form-label fw-bold">
           Ocena:
@@ -108,10 +110,15 @@ const AddReview = () => {
           ))}
         </div>
       </div>
-
-      {/* Przycisk wysyłania */}
       <button type="submit" className="btn btn-primary">
         <i className="bi bi-send me-2"></i>Dodaj opinię
+      </button>
+      <button
+        type="button"
+        className="btn btn-secondary ms-2"
+        onClick={() => setEditMode(true)}
+      >
+        Edytuj opinię
       </button>
     </form>
   );

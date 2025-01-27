@@ -177,15 +177,21 @@ export const deleteReview = async (userId, productId) => {
 };
 
 // Add the editReview function
-export const editReview = async (reviewId, reviewData) => {
+export const editReview = async (userId, productId, reviewData) => {
   try {
-    const review = await Review.findByPk(reviewId);
-    if (!review) throw new Error(`Review with ID ${reviewId} not found`);
+    const review = await Review.findOne({ where: { userId, productId } });
+    if (!review)
+      throw new Error(
+        `Review not found for user ID ${userId} and product ID ${productId}`
+      );
 
     await review.update(reviewData);
     return review;
   } catch (error) {
-    console.error(`Error editing review with ID ${reviewId}:`, error);
+    console.error(
+      `Error editing review for user ID ${userId} and product ID ${productId}:`,
+      error
+    );
     throw error;
   }
 };

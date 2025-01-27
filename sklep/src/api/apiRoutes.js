@@ -36,5 +36,5 @@ router.delete("/cart/:userId", authMiddleware, clearCart);
 router.post("/reviews", authMiddleware, addReview);
 router.get("/reviews/:productId", getReviews);
 router.delete("/reviews/:userId/:productId", authMiddleware, deleteReview);
-router.put("/reviews/:reviewId", authMiddleware, editReview);
+router.put("/reviews/:userId/:productId", authMiddleware, editReview);
 export default router;

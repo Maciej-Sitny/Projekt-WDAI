@@ -28,9 +28,6 @@ const Review = ({
             <i className="bi bi-star-fill me-1"></i>
             {rating}/5
           </span>
-          <button className="btn btn-sm btn-light me-2">
-            <i className="bi bi-pencil-square"></i> Edit Review
-          </button>
           <DeleteReview userId={userId} productId={productId} />
         </div>
       </div>
