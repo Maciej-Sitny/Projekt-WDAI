@@ -158,15 +158,20 @@ export const getReviews = async (productId) => {
   }
 };
 
-export const deleteReview = async (reviewId) => {
+export const deleteReview = async (userId, productId) => {
   try {
-    const result = await Review.destroy({ where: { id: reviewId } });
+    const result = await Review.destroy({ where: { userId, productId } });
     if (result === 0) {
-      throw new Error(`Review with ID ${reviewId} not found`);
+      throw new Error(
+        `Review not found for user ID ${userId} and product ID ${productId}`
+      );
     }
     return { message: "Review deleted successfully" };
   } catch (error) {
-    console.error(`Error deleting review with ID ${reviewId}:`, error);
+    console.error(
+      `Error deleting review for user ID ${userId} and product ID ${productId}:`,
+      error
+    );
     throw error;
   }
 };

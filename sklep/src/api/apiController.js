@@ -11,7 +11,7 @@ import {
   addReview as addReviewService,
   getReviews as getReviewsService,
   deleteReview as deleteReviewService,
-  editReview as editReviewService, // Import the editReview service
+  editReview as editReviewService,
 } from "./apiService.js";
 
 // apiController.js
@@ -154,8 +154,8 @@ export const getReviews = async (req, res) => {
 
 export const deleteReview = async (req, res) => {
   try {
-    const { reviewId } = req.params;
-    const data = await deleteReviewService(reviewId);
+    const { userId, productId } = req.params;
+    const data = await deleteReviewService(userId, productId);
     res.status(200).json(data);
   } catch (error) {
     res
@@ -164,7 +164,6 @@ export const deleteReview = async (req, res) => {
   }
 };
 
-// Add the editReview function
 export const editReview = async (req, res) => {
   try {
     const { reviewId } = req.params;

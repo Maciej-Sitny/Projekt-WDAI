@@ -89,6 +89,11 @@ const Cart = sequelize.define(
 const Review = sequelize.define(
   "Review",
   {
+    reviewId: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
     userId: {
       type: DataTypes.INTEGER,
       allowNull: false,

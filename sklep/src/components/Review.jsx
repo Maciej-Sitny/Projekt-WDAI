@@ -1,6 +1,14 @@
 import React from "react";
+import DeleteReview from "./DeleteReview"; // Make sure the path is correct
 
-const Review = ({ username, rating, comment, createdAt }) => {
+const Review = ({
+  userId,
+  productId,
+  username,
+  rating,
+  comment,
+  createdAt,
+}) => {
   const formattedDate = new Date(createdAt).toLocaleDateString("pl-PL", {
     year: "numeric",
     month: "long",
@@ -20,9 +28,10 @@ const Review = ({ username, rating, comment, createdAt }) => {
             <i className="bi bi-star-fill me-1"></i>
             {rating}/5
           </span>
-          <button className="btn btn-sm btn-light">
+          <button className="btn btn-sm btn-light me-2">
             <i className="bi bi-pencil-square"></i> Edit Review
           </button>
+          <DeleteReview userId={userId} productId={productId} />
         </div>
       </div>
       {/* Treść recenzji */}
