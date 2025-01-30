@@ -9,7 +9,7 @@ Aby uruchomić projekt lokalnie, wykonaj poniższe kroki:
 1. Sklonuj repozytorium:
    ```sh
    git clone https://github.com/Maciej-Sitny/Projekt-WDAI.git
-   cd twoje-repozytorium
+   cd Projekt-WDAI
    ```
 2. Zainstaluj zależności:
    ```sh
