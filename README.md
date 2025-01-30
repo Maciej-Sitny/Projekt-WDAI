@@ -61,10 +61,5 @@ Projekt kładzie duży nacisk na estetykę i intuicyjność interfejsu użytkown
 Projekt został stworzony przez:
 - **Igor Piesik**
 - **Maciej Sitny**
-
-## 📌 Repozytorium
-Projekt jest dostępny na GitHubie: [link do repozytorium]([https://github.com/Maciej-Sitny/Projekt-WDAI])
-
 ---
-📢 W razie pytań lub sugestii prosimy o kontakt poprzez Issues w repozytorium!
 
