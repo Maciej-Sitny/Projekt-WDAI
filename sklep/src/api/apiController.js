@@ -8,10 +8,11 @@ import {
   getCart as getCartService,
   deleteCartItem as deleteCartItemService,
   clearCart as clearCartService,
-  addReview as addReviewService,
-  getReviews as getReviewsService,
-  deleteReview as deleteReviewService,
-  editReview as editReviewService,
+  addReviewService as addReviewService,
+  getReviewsService as getReviewsService,
+  deleteReviewService as deleteReviewService,
+  editReviewService as editReviewService,
+  getReviewByUserAndProductService as getReviewByUserId,
 } from "./apiService.js";
 
 // apiController.js
@@ -53,13 +54,13 @@ export const getAllOrders = async (req, res) => {
 export const getOrderById = async (req, res) => {
   try {
     const { id } = req.params;
-    const data = await getOrderByIdService(id);
-    res.status(200).json(data);
+    const order = await getOrderByIdService(id);
+    res.status(200).json(order);
   } catch (error) {
-    res.status(500).json({
-      message: `Error fetching order with ID ${id}`,
-      error: error.message,
-    });
+    console.error("Error fetching order:", error);
+    res
+      .status(500)
+      .json({ message: "Error fetching order", error: error.message });
   }
 };
 
@@ -90,12 +91,45 @@ export const addToCart = async (req, res) => {
 export const getCart = async (req, res) => {
   try {
     const { userId } = req.params;
-    const data = await getCartService(userId);
-    res.status(200).json(data);
+    const cartItems = await getCartService(userId);
+    res.status(200).json(cartItems);
   } catch (error) {
+    console.error(`Error fetching cart items for user ID ${userId}:`, error);
     res
       .status(500)
-      .json({ message: "Error fetching cart", error: error.message });
+      .json({ message: "Error fetching cart items", error: error.message });
+  }
+};
+
+import { updateCartItemQuantityService } from "./apiService.js"; // Import the service function
+
+export const updateCartItemQuantity = async (req, res) => {
+  try {
+    const { userId, productId } = req.params; // Extract userId and productId from the URL
+    const { quantity } = req.body; // Extract quantity from the request body
+
+    // Call the service function to update the cart item quantity
+    const updatedCartItem = await updateCartItemQuantityService(
+      userId,
+      productId,
+      quantity
+    );
+
+    // Send the updated cart item as a response
+    res.status(200).json(updatedCartItem);
+  } catch (error) {
+    console.error("Error updating cart item quantity in controller:", error);
+
+    // Handle specific errors
+    if (error.message === "Cart item not found") {
+      return res.status(404).json({ message: error.message });
+    }
+
+    // Handle generic errors
+    res.status(500).json({
+      message: "Error updating cart item quantity",
+      error: error.message,
+    });
   }
 };
 
@@ -130,7 +164,7 @@ export const addReview = async (req, res) => {
     const data = await addReviewService(reviewData);
     res.status(201).json(data);
   } catch (error) {
-    if (error.message === "User has already reviewed this product") {
+    if (error.message === "User has already reviewed this product.") {
       res.status(400).json({ message: error.message });
     } else {
       res
@@ -155,24 +189,60 @@ export const getReviews = async (req, res) => {
 export const deleteReview = async (req, res) => {
   try {
     const { userId, productId } = req.params;
-    const data = await deleteReviewService(userId, productId);
-    res.status(200).json(data);
+    const { isAdmin } = req.body;
+
+    // Wywołaj funkcję usuwania opinii
+    const result = await deleteReviewService(userId, productId, isAdmin);
+    res.status(200).json(result);
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Error deleting review", error: error.message });
+    console.error("Error deleting review:", error);
+
+    if (error.message === "Review not found.") {
+      res.status(404).json({ message: error.message });
+    } else if (
+      error.message === "You are not authorized to delete this review."
+    ) {
+      res.status(403).json({ message: error.message });
+    } else {
+      res
+        .status(500)
+        .json({ message: "Error deleting review", error: error.message });
+    }
   }
 };
 
 export const editReview = async (req, res) => {
   try {
     const { userId, productId } = req.params;
-    const reviewData = req.body;
-    const data = await editReviewService(userId, productId, reviewData);
+    const { rating, comment } = req.body;
+
+    // Wywołaj funkcję edycji opinii
+    const updatedReview = await editReviewService(userId, productId, {
+      rating,
+      comment,
+    });
+    res.status(200).json(updatedReview);
+  } catch (error) {
+    console.error("Error editing review:", error);
+
+    if (error.message === "Review not found.") {
+      res.status(404).json({ message: error.message });
+    } else {
+      res
+        .status(500)
+        .json({ message: "Error editing review", error: error.message });
+    }
+  }
+};
+
+export const getReviewByUserAndProduct = async (req, res) => {
+  try {
+    const { userId, productId } = req.params;
+    const data = await getReviewByUserId(userId, productId);
     res.status(200).json(data);
   } catch (error) {
     res
       .status(500)
-      .json({ message: "Error editing review", error: error.message });
+      .json({ message: "Error fetching review", error: error.message });
   }
 };

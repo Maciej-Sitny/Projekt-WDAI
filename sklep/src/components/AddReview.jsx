@@ -15,8 +15,29 @@ const AddReview = () => {
     const token = localStorage.getItem("authToken");
     if (token) {
       const decoded = jwtDecode(token);
+      console.log("Decoded token:", decoded);
       setUserId(decoded.id);
       setUsername(decoded.email.split("@")[0]);
+
+      const checkExistingReview = async () => {
+        try {
+          const response = await fetch(
+            `http://localhost:5000/api/reviews/${decoded.id}/${productId}`
+          );
+          if (response.ok) {
+            const data = await response.json();
+            if (data) {
+              setEditMode(true);
+              setComment(data.comment);
+              setRating(data.rating);
+            }
+          }
+        } catch (error) {
+          console.error("Error checking existing review:", error);
+        }
+      };
+
+      checkExistingReview();
     }
   }, [productId]);
 
@@ -24,49 +45,39 @@ const AddReview = () => {
     e.preventDefault();
     if (!comment) return;
 
-    // Check if the user has already submitted a review for this product
-    const existingReviewResponse = await fetch(
-      `http://localhost:5000/api/reviews/${userId}/${productId}`,
-      {
+    try {
+      const url = editMode
+        ? `http://localhost:5000/api/reviews/${userId}/${productId}`
+        : "http://localhost:5000/api/reviews";
+      const method = editMode ? "PUT" : "POST";
+
+      const response = await fetch(url, {
+        method,
         headers: {
+          "Content-Type": "application/json",
           Authorization: `Bearer ${localStorage.getItem("authToken")}`,
         },
+        body: JSON.stringify({ userId, productId, username, rating, comment }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to submit review.");
       }
-    );
 
-    if (existingReviewResponse.ok) {
-      const existingReview = await existingReviewResponse.json();
-      if (existingReview) {
-        setError("You can only submit one review per product.");
-        return;
-      }
-    }
-
-    const url = editMode
-      ? `http://localhost:5000/api/reviews/${userId}/${productId}`
-      : "http://localhost:5000/api/reviews";
-    const method = editMode ? "PUT" : "POST";
-
-    const response = await fetch(url, {
-      method,
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("authToken")}`,
-      },
-      body: JSON.stringify({ userId, username, rating, comment, productId }),
-    });
-
-    if (response.ok) {
-      console.log("Review submitted successfully:", await response.json());
+      const data = await response.json();
+      console.log("Review submitted successfully:", data);
       window.location.reload();
-    } else {
-      setError("Można dodać tylko jedną opinię na produkt.");
+    } catch (error) {
+      console.error("Error submitting review:", error);
+      setError("Failed to submit review. Please try again.");
     }
   };
 
   return (
     <form className="mt-4" onSubmit={handleSubmit}>
-      <h4 className="text-primary">Dodaj opinię</h4>
+      <h4 className="text-primary">
+        {editMode ? "Edytuj opinię" : "Dodaj opinię"}
+      </h4>
       {editMode && (
         <div className="alert alert-warning" role="alert">
           Jesteś w trybie edycji
@@ -111,14 +122,8 @@ const AddReview = () => {
         </div>
       </div>
       <button type="submit" className="btn btn-primary">
-        <i className="bi bi-send me-2"></i>Dodaj opinię
-      </button>
-      <button
-        type="button"
-        className="btn btn-secondary ms-2"
-        onClick={() => setEditMode(true)}
-      >
-        Edytuj opinię
+        <i className="bi bi-send me-2"></i>
+        {editMode ? "Zapisz zmiany" : "Dodaj opinię"}
       </button>
     </form>
   );

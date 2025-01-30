@@ -7,7 +7,9 @@ const Cart = () => {
   const [cartItems, setCartItems] = useState([]);
   const [products, setProducts] = useState([]);
   const [userId, setUserId] = useState(null);
+  const [error, setError] = useState("");
 
+  // Extract user ID from the JWT token
   const getUserIdFromToken = (token) => {
     try {
       const decoded = jwtDecode(token);
@@ -18,13 +20,14 @@ const Cart = () => {
     }
   };
 
+  // Fetch cart items for the logged-in user
   const fetchCartItems = async () => {
     const token = localStorage.getItem("authToken");
     const userId = getUserIdFromToken(token);
     setUserId(userId);
 
     if (!userId) {
-      console.error("Invalid user ID from token.");
+      setError("You must be logged in to view your cart.");
       setLoading(false);
       return;
     }
@@ -44,11 +47,13 @@ const Cart = () => {
       setCartItems(data); // Assuming data is an array of cart items
     } catch (error) {
       console.error("Error fetching cart items:", error);
+      setError("Failed to load cart items. Please try again later.");
     } finally {
       setLoading(false);
     }
   };
 
+  // Fetch product details from the FakeStore API
   const fetchProducts = async () => {
     try {
       const response = await fetch(`https://fakestoreapi.com/products`);
@@ -56,14 +61,11 @@ const Cart = () => {
       setProducts(data);
     } catch (error) {
       console.error("Error fetching products:", error);
+      setError("Failed to load product details.");
     }
   };
 
-  useEffect(() => {
-    fetchCartItems();
-    fetchProducts();
-  }, []);
-
+  // Delete an item from the cart
   const handleDelete = async (itemId) => {
     const token = localStorage.getItem("authToken");
 
@@ -82,12 +84,48 @@ const Cart = () => {
         throw new Error("Failed to delete item from cart.");
       }
 
-      fetchCartItems();
+      fetchCartItems(); // Refresh the cart after deletion
     } catch (error) {
       console.error("Error deleting item from cart:", error);
+      setError("Failed to delete item. Please try again.");
     }
   };
 
+  // Update the quantity of an item in the cart
+  const handleQuantityChange = async (itemId, newQuantity) => {
+    const token = localStorage.getItem("authToken");
+
+    try {
+      const response = await fetch(
+        `http://localhost:5000/api/cart/${userId}/${itemId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ quantity: newQuantity }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to update item quantity.");
+      }
+
+      fetchCartItems(); // Refresh the cart after updating quantity
+    } catch (error) {
+      console.error("Error updating item quantity:", error);
+      setError("Failed to update quantity. Please try again.");
+    }
+  };
+
+  // Fetch cart items and product details on component mount
+  useEffect(() => {
+    fetchCartItems();
+    fetchProducts();
+  }, []);
+
+  // Show loading spinner while data is being fetched
   if (loading) {
     return (
       <div className="d-flex justify-content-center align-items-center vh-100">
@@ -98,13 +136,24 @@ const Cart = () => {
     );
   }
 
+  // Show error message if there's an error
+  if (error) {
+    return (
+      <div className="container mt-5">
+        <div className="alert alert-danger text-center">{error}</div>
+      </div>
+    );
+  }
+
+  // Get product details by product ID
   const getProductDetails = (productId) => {
     return products.find((product) => product.id === productId);
   };
 
+  // Calculate the total price of all items in the cart
   const totalPrice = cartItems.reduce((total, item) => {
     const product = getProductDetails(item.productId);
-    return total + (product ? parseFloat(product.price, 10) : 0);
+    return total + (product ? parseFloat(product.price) * item.quantity : 0);
   }, 0);
 
   return (
@@ -121,6 +170,8 @@ const Cart = () => {
               <tr>
                 <th>Product</th>
                 <th>Price</th>
+                <th>Quantity</th>
+                <th>Total</th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -131,6 +182,28 @@ const Cart = () => {
                   <tr key={item.id}>
                     <td>{product ? product.title : "Unknown"}</td>
                     <td>${product ? product.price : "Unknown"}</td>
+                    <td>
+                      <input
+                        type="number"
+                        min="1"
+                        value={item.quantity}
+                        onChange={(e) =>
+                          handleQuantityChange(
+                            item.productId,
+                            parseInt(e.target.value)
+                          )
+                        }
+                        className="form-control"
+                        style={{ width: "80px" }}
+                      />
+                    </td>
+                    <td>
+                      $
+                      {(product
+                        ? parseFloat(product.price) * item.quantity
+                        : 0
+                      ).toFixed(2)}
+                    </td>
                     <td>
                       <button
                         className="btn btn-danger btn-sm"

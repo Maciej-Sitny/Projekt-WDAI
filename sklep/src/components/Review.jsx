@@ -8,6 +8,7 @@ const Review = ({
   rating,
   comment,
   createdAt,
+  isAdmin,
 }) => {
   const formattedDate = new Date(createdAt).toLocaleDateString("pl-PL", {
     year: "numeric",
@@ -17,7 +18,6 @@ const Review = ({
 
   return (
     <div className="card mb-4 shadow-sm border-0 rounded-4">
-      {/* Nagłówek */}
       <div className="card-header bg-primary text-white d-flex justify-content-between align-items-center rounded-top">
         <div className="d-flex align-items-center">
           <i className="bi bi-person-circle fs-4 me-2"></i>
@@ -28,17 +28,19 @@ const Review = ({
             <i className="bi bi-star-fill me-1"></i>
             {rating}/5
           </span>
-          <DeleteReview userId={userId} productId={productId} />
+          <DeleteReview
+            userId={userId}
+            productId={productId}
+            isAdmin={isAdmin}
+          />
         </div>
       </div>
 
-      {/* Treść recenzji */}
       <div className="card-body">
         <p className="fw-bold mb-2">Ocena produktu: {rating}/5</p>
         <p className="text-secondary">{comment}</p>
       </div>
 
-      {/* Stopka */}
       <div className="card-footer bg-light text-end rounded-bottom">
         <small className="text-muted">
           <i className="bi bi-calendar-event me-1"></i>

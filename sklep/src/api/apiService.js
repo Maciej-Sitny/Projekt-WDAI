@@ -8,11 +8,18 @@ export const login = async (credentials) => {
     const user = await User.findOne({
       where: { email: credentials.email, password: credentials.password },
     });
-    if (!user) throw new Error("Invalid credentials");
 
-    const token = jwt.sign({ id: user.id, email: user.email }, SECRET_KEY, {
-      expiresIn: "1h",
-    });
+    if (!user) {
+      throw new Error("Invalid credentials.");
+    }
+
+    const token = jwt.sign(
+      { id: user.id, email: user.email, role: user.role },
+      SECRET_KEY,
+      {
+        expiresIn: "1h",
+      }
+    );
 
     return { user, token };
   } catch (error) {
@@ -41,13 +48,15 @@ export const getAllOrders = async (userId) => {
   }
 };
 
-export const getOrderById = async (id) => {
+export const getOrderById = async (orderId) => {
   try {
-    const order = await Order.findByPk(id);
-    if (!order) throw new Error(`Order with ID ${id} not found`);
+    const order = await Order.findByPk(orderId);
+    if (!order) {
+      throw new Error("Order not found.");
+    }
     return order;
   } catch (error) {
-    console.error(`Error fetching order with ID ${id}:`, error);
+    console.error("Error fetching order:", error);
     throw error;
   }
 };
@@ -62,10 +71,51 @@ export const createOrder = async (orderData) => {
   }
 };
 
+export const updateCartItemQuantityService = async (
+  userId,
+  productId,
+  quantity
+) => {
+  try {
+    // Find the cart item for the given user and product
+    const cartItem = await Cart.findOne({ where: { userId, productId } });
+
+    // If the cart item doesn't exist, throw an error
+    if (!cartItem) {
+      throw new Error("Cart item not found");
+    }
+
+    // Update the quantity
+    cartItem.quantity = quantity;
+    await cartItem.save();
+
+    // Return the updated cart item
+    return cartItem;
+  } catch (error) {
+    console.error("Error updating cart item quantity in service:", error);
+    throw error; // Re-throw the error for the controller to handle
+  }
+};
+
 export const addToCart = async (cartData) => {
   try {
-    const newCartItem = await Cart.create(cartData);
-    return newCartItem;
+    const { userId, productId, quantity } = cartData;
+
+    // Sprawdź, czy produkt już istnieje w koszyku użytkownika
+    const existingCartItem = await Cart.findOne({
+      where: { userId, productId },
+    });
+
+    if (existingCartItem) {
+      // Jeśli produkt już istnieje, zaktualizuj ilość
+      existingCartItem.quantity += quantity;
+      await existingCartItem.save();
+      return existingCartItem;
+    } else {
+      // Jeśli produkt nie istnieje, dodaj nowy wpis do koszyka
+      const newCartItem = await Cart.create(cartData);
+      return newCartItem;
+    }
   } catch (error) {
     console.error("Error adding to cart:", error);
     throw error;
@@ -74,17 +124,19 @@ export const addToCart = async (cartData) => {
 
 export const getCart = async (userId) => {
   try {
+    // Find all cart items for the given user
     const cartItems = await Cart.findAll({ where: { userId } });
-    if (!cartItems.length) {
-      throw new Error(`No cart items found for user with ID ${userId}`);
+
+    // If no cart items are found, return an empty array
+    if (!cartItems || cartItems.length === 0) {
+      return [];
     }
+
+    // Return the cart items
     return cartItems;
   } catch (error) {
-    console.error(
-      `Error fetching cart items for user with ID ${userId}:`,
-      error
-    );
-    throw error;
+    console.error("Error fetching cart items in service:", error);
+    throw error; // Re-throw the error for the controller to handle
   }
 };
 
@@ -130,13 +182,19 @@ export const checkUserReview = async (userId, productId) => {
   }
 };
 
-export const addReview = async (reviewData) => {
+export const addReviewService = async (reviewData) => {
   try {
     const { userId, productId } = reviewData;
-    const hasReview = await checkUserReview(userId, productId);
-    if (hasReview) {
-      throw new Error("User has already reviewed this product");
+
+    // Check if the user has already reviewed this product
+    const existingReview = await Review.findOne({
+      where: { userId, productId },
+    });
+    if (existingReview) {
+      throw new Error("User has already reviewed this product.");
     }
+
+    // Add the new review
     const newReview = await Review.create(reviewData);
     return newReview;
   } catch (error) {
@@ -145,53 +203,57 @@ export const addReview = async (reviewData) => {
   }
 };
 
-export const getReviews = async (productId) => {
+export const getReviewsService = async (productId) => {
   try {
     const reviews = await Review.findAll({ where: { productId } });
     return reviews;
   } catch (error) {
-    console.error(
-      `Error fetching reviews for product with ID ${productId}:`,
-      error
-    );
+    console.error("Error fetching reviews:", error);
     throw error;
   }
 };
 
-export const deleteReview = async (userId, productId) => {
+export const deleteReviewService = async (userId, productId, isAdmin) => {
   try {
-    const result = await Review.destroy({ where: { userId, productId } });
-    if (result === 0) {
-      throw new Error(
-        `Review not found for user ID ${userId} and product ID ${productId}`
-      );
+    // Znajdź opinię do usunięcia
+    const review = await Review.findOne({ where: { userId, productId } });
+    if (!review) {
+      throw new Error("Review not found.");
     }
-    return { message: "Review deleted successfully" };
+
+    // Usuń opinię
+    await review.destroy();
+    return { message: "Review deleted successfully." };
   } catch (error) {
-    console.error(
-      `Error deleting review for user ID ${userId} and product ID ${productId}:`,
-      error
-    );
+    console.error("Error deleting review:", error);
     throw error;
   }
 };
 
 // Add the editReview function
-export const editReview = async (userId, productId, reviewData) => {
+export const editReviewService = async (userId, productId, reviewData) => {
   try {
+    // Znajdź opinię do edycji
     const review = await Review.findOne({ where: { userId, productId } });
-    if (!review)
-      throw new Error(
-        `Review not found for user ID ${userId} and product ID ${productId}`
-      );
+    if (!review) {
+      throw new Error("Review not found.");
+    }
 
+    // Zaktualizuj opinię
     await review.update(reviewData);
     return review;
   } catch (error) {
-    console.error(
-      `Error editing review for user ID ${userId} and product ID ${productId}:`,
-      error
-    );
+    console.error("Error editing review:", error);
+    throw error;
+  }
+};
+
+export const getReviewByUserAndProductService = async (userId, productId) => {
+  try {
+    const review = await Review.findOne({ where: { userId, productId } });
+    return review;
+  } catch (error) {
+    console.error("Error fetching review:", error);
     throw error;
   }
 };

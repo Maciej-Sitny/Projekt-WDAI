@@ -5,12 +5,12 @@ import sequelize from "./apiDatabase.js";
 const User = sequelize.define(
   "User",
   {
-    email: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      unique: true,
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
     },
-    username: {
+    email: {
       type: DataTypes.STRING,
       allowNull: false,
       unique: true,
@@ -18,6 +18,10 @@ const User = sequelize.define(
     password: {
       type: DataTypes.STRING,
       allowNull: false,
+    },
+    role: {
+      type: DataTypes.ENUM("user", "admin"), // Role: user lub admin
+      defaultValue: "user", // Domyślna rola to "user"
     },
     createdAt: {
       type: DataTypes.DATE,
@@ -33,6 +37,11 @@ const User = sequelize.define(
 const Order = sequelize.define(
   "Order",
   {
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
     userId: {
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -49,7 +58,23 @@ const Order = sequelize.define(
       type: DataTypes.ENUM("Pending", "Shipped", "Delivered", "Cancelled"),
       defaultValue: "Pending",
     },
-    address: {
+    shippingAddress: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    city: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    postalCode: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    country: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    phoneNumber: {
       type: DataTypes.STRING,
       allowNull: false,
     },
@@ -74,6 +99,11 @@ const Cart = sequelize.define(
     productId: {
       type: DataTypes.INTEGER,
       allowNull: false,
+    },
+    quantity: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 1, // Domyślna ilość to 1
     },
     createdAt: {
       type: DataTypes.DATE,

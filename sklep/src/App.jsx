@@ -12,6 +12,7 @@ import Navbar from "./components/Navbar";
 import AllProducts from "./pages/AllProducts";
 import Cart from "./pages/Cart";
 import Orders from "./pages/Orders";
+import OrderDetails from "./pages/OrderDetails";
 
 const App = () => {
   return (
@@ -27,6 +28,7 @@ const App = () => {
           <Route path="login" element={<Login />} />
           <Route path="cart" element={<Cart />} />
           <Route path="orders" element={<Orders />} />
+          <Route path="orders/:id" element={<OrderDetails />} />
           <Route path="*" element={<NoPage />} />
         </Route>
       </Routes>
