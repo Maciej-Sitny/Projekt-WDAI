@@ -2,14 +2,15 @@ import React, { useState } from "react";
 import { jwtDecode } from "jwt-decode";
 
 const AddToCart = ({ product }) => {
-  const [quantity, setQuantity] = useState(1); // Default quantity is 1
+  const [quantity, setQuantity] = useState(1); // Domyślna ilość to 1
+  const [message, setMessage] = useState(""); // Powiadomienie o dodaniu do koszyka
 
   const getUserIdFromToken = (token) => {
     try {
       const decoded = jwtDecode(token);
       return decoded.id;
     } catch (error) {
-      console.error("Error decoding token:", error);
+      console.error("Błąd podczas dekodowania tokena:", error);
       return null;
     }
   };
@@ -19,14 +20,14 @@ const AddToCart = ({ product }) => {
     const userId = getUserIdFromToken(token);
 
     if (!userId) {
-      alert("You must be logged in to add items to the cart.");
+      alert("Musisz być zalogowany, aby dodać produkt do koszyka.");
       return;
     }
 
     const cartItem = {
       userId: userId,
       productId: product.id,
-      quantity: quantity, // Include quantity in the request
+      quantity: quantity, // Uwzględnienie ilości w żądaniu
     };
 
     try {
@@ -40,10 +41,13 @@ const AddToCart = ({ product }) => {
       });
 
       if (!response.ok) {
-        throw new Error("Failed to update cart");
+        throw new Error("Nie udało się dodać do koszyka");
       }
+
+      setMessage("Produkt został dodany do koszyka!");
+      setTimeout(() => setMessage(""), 3000); // Ukryj powiadomienie po 3 sekundach
     } catch (error) {
-      console.error("Error updating cart:", error);
+      console.error("Błąd podczas dodawania do koszyka:", error);
     }
   };
 
@@ -51,7 +55,7 @@ const AddToCart = ({ product }) => {
     <div>
       <div className="mb-3">
         <label htmlFor="quantity" className="form-label">
-          Quantity:
+          Ilość:
         </label>
         <input
           type="number"
@@ -63,8 +67,14 @@ const AddToCart = ({ product }) => {
         />
       </div>
       <button className="btn btn-warning" onClick={handleCart}>
-      Dodaj do koszyka
-    </button>
+        Dodaj do koszyka
+      </button>
+
+      {message && (
+        <div className="alert alert-success mt-3" role="alert">
+          {message}
+        </div>
+      )}
     </div>
   );
 };

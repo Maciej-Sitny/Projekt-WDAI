@@ -10,7 +10,7 @@ const CreateOrder = ({ cartItems, userId, totalAmount }) => {
 
   const createOrder = async () => {
     if (!shippingAddress || !city || !postalCode || !country || !phoneNumber) {
-      setOrderMessage("All fields are required.");
+      setOrderMessage("Wszystkie pola są wymagane.");
       return;
     }
 
@@ -36,13 +36,12 @@ const CreateOrder = ({ cartItems, userId, totalAmount }) => {
       });
 
       if (!response.ok) {
-        throw new Error("Failed to create order.");
+        throw new Error("Nie udało się utworzyć zamówienia.");
       }
 
       const newOrder = await response.json();
-      setOrderMessage("Order created successfully!");
+      setOrderMessage("Zamówienie utworzone pomyślnie!");
 
-      // Clear the cart
       await fetch(`http://localhost:5000/api/cart/${userId}`, {
         method: "DELETE",
         headers: {
@@ -50,30 +49,29 @@ const CreateOrder = ({ cartItems, userId, totalAmount }) => {
         },
       });
 
-      // Clear the form
       setShippingAddress("");
       setCity("");
       setPostalCode("");
       setCountry("");
       setPhoneNumber("");
     } catch (error) {
-      console.error("Error creating order:", error);
-      setOrderMessage("Failed to create order.");
+      console.error("Błąd podczas tworzenia zamówienia:", error);
+      setOrderMessage("Nie udało się utworzyć zamówienia.");
     }
   };
 
   return (
     <div className="container mt-4 p-4 border rounded shadow">
-      <h2 className="mb-4 text-center">Create Order</h2>
+      <h2 className="mb-4 text-center">Utwórz Zamówienie</h2>
       <div className="form-group mb-3">
         <label htmlFor="shippingAddress" className="form-label">
-          Shipping Address:
+          Adres wysyłki:
         </label>
         <input
           type="text"
           className="form-control"
           id="shippingAddress"
-          placeholder="Enter your shipping address"
+          placeholder="Wprowadź adres wysyłki"
           value={shippingAddress}
           onChange={(e) => setShippingAddress(e.target.value)}
           required
@@ -81,13 +79,13 @@ const CreateOrder = ({ cartItems, userId, totalAmount }) => {
       </div>
       <div className="form-group mb-3">
         <label htmlFor="city" className="form-label">
-          City:
+          Miasto:
         </label>
         <input
           type="text"
           className="form-control"
           id="city"
-          placeholder="Enter your city"
+          placeholder="Wprowadź miasto"
           value={city}
           onChange={(e) => setCity(e.target.value)}
           required
@@ -95,13 +93,13 @@ const CreateOrder = ({ cartItems, userId, totalAmount }) => {
       </div>
       <div className="form-group mb-3">
         <label htmlFor="postalCode" className="form-label">
-          Postal Code:
+          Kod pocztowy:
         </label>
         <input
           type="text"
           className="form-control"
           id="postalCode"
-          placeholder="Enter your postal code"
+          placeholder="Wprowadź kod pocztowy"
           value={postalCode}
           onChange={(e) => setPostalCode(e.target.value)}
           required
@@ -109,13 +107,13 @@ const CreateOrder = ({ cartItems, userId, totalAmount }) => {
       </div>
       <div className="form-group mb-3">
         <label htmlFor="country" className="form-label">
-          Country:
+          Kraj:
         </label>
         <input
           type="text"
           className="form-control"
           id="country"
-          placeholder="Enter your country"
+          placeholder="Wprowadź kraj"
           value={country}
           onChange={(e) => setCountry(e.target.value)}
           required
@@ -123,13 +121,13 @@ const CreateOrder = ({ cartItems, userId, totalAmount }) => {
       </div>
       <div className="form-group mb-3">
         <label htmlFor="phoneNumber" className="form-label">
-          Phone Number:
+          Numer telefonu:
         </label>
         <input
           type="text"
           className="form-control"
           id="phoneNumber"
-          placeholder="Enter your phone number"
+          placeholder="Wprowadź numer telefonu"
           value={phoneNumber}
           onChange={(e) => setPhoneNumber(e.target.value)}
           required
@@ -137,7 +135,7 @@ const CreateOrder = ({ cartItems, userId, totalAmount }) => {
       </div>
       <div className="d-flex justify-content-between align-items-center mb-3">
         <p className="mb-0">
-          Total Amount: <strong>${totalAmount.toFixed(2)}</strong>
+          Kwota całkowita: <strong>${totalAmount.toFixed(2)}</strong>
         </p>
         <button
           className="btn btn-primary"
@@ -146,13 +144,13 @@ const CreateOrder = ({ cartItems, userId, totalAmount }) => {
             !shippingAddress || !city || !postalCode || !country || !phoneNumber
           }
         >
-          Create Order
+          Utwórz Zamówienie
         </button>
       </div>
       {orderMessage && (
         <div
           className={`alert ${
-            orderMessage.includes("successfully")
+            orderMessage.includes("pomyślnie")
               ? "alert-success"
               : "alert-danger"
           } mt-3`}

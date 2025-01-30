@@ -21,13 +21,13 @@ const OrderDetails = () => {
         );
 
         if (!response.ok) {
-          throw new Error("Failed to fetch order.");
+          throw new Error("Nie udało się pobrać zamówienia.");
         }
         const data = await response.json();
         setOrder(data);
       } catch (error) {
-        console.error("Error fetching order:", error);
-        setError("Failed to fetch order details.");
+        console.error("Błąd podczas pobierania zamówienia:", error);
+        setError("Nie udało się pobrać szczegółów zamówienia.");
       } finally {
         setLoading(false);
       }
@@ -39,8 +39,8 @@ const OrderDetails = () => {
         const data = await response.json();
         setProducts(data);
       } catch (error) {
-        console.error("Error fetching products:", error);
-        setError("Failed to load product details.");
+        console.error("Błąd podczas pobierania produktów:", error);
+        setError("Nie udało się załadować szczegółów produktów.");
       }
     };
 
@@ -53,46 +53,45 @@ const OrderDetails = () => {
   };
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <div>Ładowanie...</div>;
   }
 
   if (error) {
     return <div className="alert alert-danger">{error}</div>;
   }
 
-  console.log("Order data:", order);
+  console.log("Dane zamówienia:", order);
 
   return (
     <div className="container mt-5">
-      <h2 className="text-center mb-4">Order Details</h2>
+      <h2 className="text-center mb-4">Szczegóły zamówienia</h2>
       {order && (
         <div className="card shadow">
           <div className="card-body">
-            <h5 className="card-title">Order ID: {order.id}</h5>
+            <h5 className="card-title">ID zamówienia: {order.id}</h5>
             <p className="card-text">
               <strong>Status:</strong> {order.status || "N/A"}
             </p>
             <p className="card-text">
-              <strong>Total Amount:</strong> $
+              <strong>Łączna kwota:</strong> $
               {order?.totalAmount?.toFixed(2) || "N/A"}
             </p>
             <p className="card-text">
-              <strong>Shipping Address:</strong>{" "}
-              {order.shippingAddress || "N/A"}
+              <strong>Adres wysyłki:</strong> {order.shippingAddress || "N/A"}
             </p>
             <p className="card-text">
-              <strong>City:</strong> {order.city || "N/A"}
+              <strong>Miasto:</strong> {order.city || "N/A"}
             </p>
             <p className="card-text">
-              <strong>Postal Code:</strong> {order.postalCode || "N/A"}
+              <strong>Kod pocztowy:</strong> {order.postalCode || "N/A"}
             </p>
             <p className="card-text">
-              <strong>Country:</strong> {order.country || "N/A"}
+              <strong>Kraj:</strong> {order.country || "N/A"}
             </p>
             <p className="card-text">
-              <strong>Phone Number:</strong> {order.phoneNumber || "N/A"}
+              <strong>Numer telefonu:</strong> {order.phoneNumber || "N/A"}
             </p>
-            <h6 className="mt-4">Products:</h6>
+            <h6 className="mt-4">Produkty:</h6>
             <ul className="list-group">
               {order.products?.map((product, index) => {
                 const productDetails = getProductDetails(product.productId);
@@ -100,13 +99,13 @@ const OrderDetails = () => {
                   <li key={index} className="list-group-item">
                     {productDetails ? (
                       <>
-                        <strong>{productDetails.title}</strong> - Quantity:{" "}
-                        {product.quantity} - Price: ${productDetails.price}
+                        <strong>{productDetails.title}</strong> - Ilość:{" "}
+                        {product.quantity} - Cena: ${productDetails.price}
                       </>
                     ) : (
                       <>
-                        Product ID: {product.productId} - Quantity:{" "}
-                        {product.quantity} - Created At:{" "}
+                        ID produktu: {product.productId} - Ilość:{" "}
+                        {product.quantity} - Utworzono:{" "}
                         {new Date(product.createdAt).toLocaleString()}
                       </>
                     )}

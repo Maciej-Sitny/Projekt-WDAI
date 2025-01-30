@@ -5,7 +5,6 @@ const DeleteReview = ({ userId, productId, isAdmin }) => {
   const [currentUserId, setCurrentUserId] = useState(null);
 
   useEffect(() => {
-    // Pobierz ID obecnie zalogowanego użytkownika z tokenu
     const token = localStorage.getItem("authToken");
     if (token) {
       const decoded = jwtDecode(token);
@@ -15,9 +14,9 @@ const DeleteReview = ({ userId, productId, isAdmin }) => {
 
   const handleDelete = async () => {
     try {
-      console.log("Current User ID:", currentUserId);
-      console.log("Review User ID:", userId);
-      console.log("Is Admin:", isAdmin);
+      console.log("ID obecnego użytkownika:", currentUserId);
+      console.log("ID użytkownika recenzji:", userId);
+      console.log("Czy admin:", isAdmin);
 
       const response = await fetch(
         `http://localhost:5000/api/reviews/${userId}/${productId}`,
@@ -26,27 +25,25 @@ const DeleteReview = ({ userId, productId, isAdmin }) => {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("authToken")}`,
           },
-          body: JSON.stringify({ isAdmin }), // Przekazujemy flagę isAdmin do backendu
+          body: JSON.stringify({ isAdmin }),
         }
       );
 
       if (!response.ok) {
-        throw new Error("Failed to delete review.");
+        throw new Error("Nie udało się usunąć recenzji.");
       }
 
       const data = await response.json();
-      console.log("Review deleted successfully:", data);
-      window.location.reload(); // Odśwież stronę po usunięciu opinii
+      console.log("Recenzja usunięta pomyślnie:", data);
+      window.location.reload();
     } catch (error) {
-      console.error("Error deleting review:", error);
-      alert("Failed to delete review. Please try again.");
+      console.error("Błąd podczas usuwania recenzji:", error);
+      alert("Nie udało się usunąć recenzji. Spróbuj ponownie.");
     }
   };
 
-  // Sprawdź, czy użytkownik ma uprawnienia do usunięcia opinii
   const canDelete = isAdmin || currentUserId === userId;
 
-  // Renderuj przycisk usuwania tylko, jeśli użytkownik ma uprawnienia
   return canDelete ? (
     <button
       className="btn btn-danger btn-sm"

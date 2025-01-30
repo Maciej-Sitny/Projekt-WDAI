@@ -9,25 +9,23 @@ const Cart = () => {
   const [userId, setUserId] = useState(null);
   const [error, setError] = useState("");
 
-  // Extract user ID from the JWT token
   const getUserIdFromToken = (token) => {
     try {
       const decoded = jwtDecode(token);
-      return decoded.id; // Replace with the actual field name in your token payload
+      return decoded.id;
     } catch (error) {
-      console.error("Error decoding token:", error);
+      console.error("Błąd dekodowania tokena:", error);
       return null;
     }
   };
 
-  // Fetch cart items for the logged-in user
   const fetchCartItems = async () => {
     const token = localStorage.getItem("authToken");
     const userId = getUserIdFromToken(token);
     setUserId(userId);
 
     if (!userId) {
-      setError("You must be logged in to view your cart.");
+      setError("Musisz być zalogowany, aby zobaczyć swój koszyk.");
       setLoading(false);
       return;
     }
@@ -40,32 +38,32 @@ const Cart = () => {
       });
 
       if (!response.ok) {
-        throw new Error("Failed to fetch cart items.");
+        throw new Error("Nie udało się pobrać przedmiotów z koszyka.");
       }
 
       const data = await response.json();
-      setCartItems(data); // Assuming data is an array of cart items
+      setCartItems(data);
     } catch (error) {
-      console.error("Error fetching cart items:", error);
-      setError("Failed to load cart items. Please try again later.");
+      console.error("Błąd pobierania przedmiotów z koszyka:", error);
+      setError(
+        "Nie udało się załadować przedmiotów z koszyka. Spróbuj ponownie później."
+      );
     } finally {
       setLoading(false);
     }
   };
 
-  // Fetch product details from the FakeStore API
   const fetchProducts = async () => {
     try {
       const response = await fetch(`https://fakestoreapi.com/products`);
       const data = await response.json();
       setProducts(data);
     } catch (error) {
-      console.error("Error fetching products:", error);
-      setError("Failed to load product details.");
+      console.error("Błąd pobierania produktów:", error);
+      setError("Nie udało się załadować szczegółów produktów.");
     }
   };
 
-  // Delete an item from the cart
   const handleDelete = async (itemId) => {
     const token = localStorage.getItem("authToken");
 
@@ -81,17 +79,16 @@ const Cart = () => {
       );
 
       if (!response.ok) {
-        throw new Error("Failed to delete item from cart.");
+        throw new Error("Nie udało się usunąć przedmiotu z koszyka.");
       }
 
-      fetchCartItems(); // Refresh the cart after deletion
+      fetchCartItems();
     } catch (error) {
-      console.error("Error deleting item from cart:", error);
-      setError("Failed to delete item. Please try again.");
+      console.error("Błąd usuwania przedmiotu z koszyka:", error);
+      setError("Nie udało się usunąć przedmiotu. Spróbuj ponownie.");
     }
   };
 
-  // Update the quantity of an item in the cart
   const handleQuantityChange = async (itemId, newQuantity) => {
     const token = localStorage.getItem("authToken");
 
@@ -109,34 +106,31 @@ const Cart = () => {
       );
 
       if (!response.ok) {
-        throw new Error("Failed to update item quantity.");
+        throw new Error("Nie udało się zaktualizować ilości przedmiotu.");
       }
 
-      fetchCartItems(); // Refresh the cart after updating quantity
+      fetchCartItems();
     } catch (error) {
-      console.error("Error updating item quantity:", error);
-      setError("Failed to update quantity. Please try again.");
+      console.error("Błąd aktualizacji ilości przedmiotu:", error);
+      setError("Nie udało się zaktualizować ilości. Spróbuj ponownie.");
     }
   };
 
-  // Fetch cart items and product details on component mount
   useEffect(() => {
     fetchCartItems();
     fetchProducts();
   }, []);
 
-  // Show loading spinner while data is being fetched
   if (loading) {
     return (
       <div className="d-flex justify-content-center align-items-center vh-100">
         <div className="spinner-border text-primary" role="status">
-          <span className="sr-only">Loading...</span>
+          <span className="sr-only">Ładowanie...</span>
         </div>
       </div>
     );
   }
 
-  // Show error message if there's an error
   if (error) {
     return (
       <div className="container mt-5">
@@ -145,12 +139,10 @@ const Cart = () => {
     );
   }
 
-  // Get product details by product ID
   const getProductDetails = (productId) => {
     return products.find((product) => product.id === productId);
   };
 
-  // Calculate the total price of all items in the cart
   const totalPrice = cartItems.reduce((total, item) => {
     const product = getProductDetails(item.productId);
     return total + (product ? parseFloat(product.price) * item.quantity : 0);
@@ -158,21 +150,21 @@ const Cart = () => {
 
   return (
     <div className="container mt-5">
-      <h1 className="text-center mb-4">Your Shopping Cart</h1>
+      <h1 className="text-center mb-4">Twój Koszyk</h1>
       {cartItems.length === 0 ? (
         <div className="alert alert-info text-center">
-          Your cart is currently empty.
+          Twój koszyk jest pusty.
         </div>
       ) : (
         <>
           <table className="table table-bordered table-hover">
             <thead className="thead-dark">
               <tr>
-                <th>Product</th>
-                <th>Price</th>
-                <th>Quantity</th>
-                <th>Total</th>
-                <th>Actions</th>
+                <th>Produkt</th>
+                <th>Cena</th>
+                <th>Ilość</th>
+                <th>Łącznie</th>
+                <th>Akcje</th>
               </tr>
             </thead>
             <tbody>
@@ -180,8 +172,8 @@ const Cart = () => {
                 const product = getProductDetails(item.productId);
                 return (
                   <tr key={item.id}>
-                    <td>{product ? product.title : "Unknown"}</td>
-                    <td>${product ? product.price : "Unknown"}</td>
+                    <td>{product ? product.title : "Nieznany"}</td>
+                    <td>${product ? product.price : "Nieznany"}</td>
                     <td>
                       <input
                         type="number"
@@ -209,7 +201,7 @@ const Cart = () => {
                         className="btn btn-danger btn-sm"
                         onClick={() => handleDelete(item.productId)}
                       >
-                        <i className="fas fa-trash-alt"></i> Remove
+                        <i className="fas fa-trash-alt"></i> Usuń
                       </button>
                     </td>
                   </tr>
@@ -218,7 +210,7 @@ const Cart = () => {
             </tbody>
           </table>
           <div className="text-right mt-3">
-            <h3>Total Price: ${totalPrice.toFixed(2)}</h3>
+            <h3>Łączna Cena: ${totalPrice.toFixed(2)}</h3>
           </div>
           <div className="text-center mt-4">
             <CreateOrder

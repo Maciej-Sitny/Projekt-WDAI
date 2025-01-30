@@ -15,7 +15,7 @@ const AddReview = () => {
     const token = localStorage.getItem("authToken");
     if (token) {
       const decoded = jwtDecode(token);
-      console.log("Decoded token:", decoded);
+      console.log("Zdekodowany token:", decoded);
       setUserId(decoded.id);
       setUsername(decoded.email.split("@")[0]);
 
@@ -33,7 +33,7 @@ const AddReview = () => {
             }
           }
         } catch (error) {
-          console.error("Error checking existing review:", error);
+          console.error("Błąd podczas sprawdzania istniejącej opinii:", error);
         }
       };
 
@@ -61,15 +61,15 @@ const AddReview = () => {
       });
 
       if (!response.ok) {
-        throw new Error("Failed to submit review.");
+        throw new Error("Nie udało się przesłać opinii.");
       }
 
       const data = await response.json();
-      console.log("Review submitted successfully:", data);
+      console.log("Opinia została pomyślnie przesłana:", data);
       window.location.reload();
     } catch (error) {
-      console.error("Error submitting review:", error);
-      setError("Failed to submit review. Please try again.");
+      console.error("Błąd podczas przesyłania opinii:", error);
+      setError("Nie udało się przesłać opinii. Spróbuj ponownie.");
     }
   };
 

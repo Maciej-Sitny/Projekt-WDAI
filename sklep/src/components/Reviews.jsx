@@ -14,7 +14,7 @@ const Reviews = () => {
     const token = localStorage.getItem("authToken");
     if (token) {
       const decoded = jwtDecode(token);
-      setIsAdmin(decoded.role === "admin"); // Check if the user is an admin
+      setIsAdmin(decoded.role === "admin");
     }
 
     const fetchReviews = async () => {
