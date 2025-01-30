@@ -1,7 +1,7 @@
 # 📌 Projekt Prosty sklep internetowy
 
 ## 📖 Opis
-Projekt to nowoczesna aplikacja webowa stworzona przy użyciu technologii React oraz Express. Głównym celem jest dostarczenie interaktywnego interfejsu użytkownika oraz stabilnego backendu opartego na SQLite i Sequelize.
+Nasz projekt to nowoczesna aplikacja webowa stworzona przy użyciu technologii React oraz Express. Głównym celem jest dostarczenie interaktywnego interfejsu użytkownika oraz stabilnego backendu opartego na SQLite i Sequelize.
 
 ## 🚀 Setup projektu
 Aby uruchomić projekt lokalnie, wykonaj poniższe kroki:
