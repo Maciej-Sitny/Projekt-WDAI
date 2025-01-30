@@ -42,11 +42,8 @@ const AddToCart = ({ product }) => {
       if (!response.ok) {
         throw new Error("Failed to update cart");
       }
-
-      alert("Product added to cart successfully!");
     } catch (error) {
       console.error("Error updating cart:", error);
-      alert("Failed to add product to cart. Please try again.");
     }
   };
 

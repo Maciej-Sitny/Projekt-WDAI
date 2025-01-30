@@ -48,13 +48,15 @@ export const getAllOrders = async (userId) => {
   }
 };
 
-export const getOrderById = async (id) => {
+export const getOrderById = async (orderId) => {
   try {
-    const order = await Order.findByPk(id);
-    if (!order) throw new Error(`Order with ID ${id} not found`);
+    const order = await Order.findByPk(orderId);
+    if (!order) {
+      throw new Error("Order not found.");
+    }
     return order;
   } catch (error) {
-    console.error(`Error fetching order with ID ${id}:`, error);
+    console.error("Error fetching order:", error);
     throw error;
   }
 };

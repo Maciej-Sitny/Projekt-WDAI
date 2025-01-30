@@ -37,6 +37,11 @@ const User = sequelize.define(
 const Order = sequelize.define(
   "Order",
   {
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
     userId: {
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -53,7 +58,23 @@ const Order = sequelize.define(
       type: DataTypes.ENUM("Pending", "Shipped", "Delivered", "Cancelled"),
       defaultValue: "Pending",
     },
-    address: {
+    shippingAddress: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    city: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    postalCode: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    country: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    phoneNumber: {
       type: DataTypes.STRING,
       allowNull: false,
     },

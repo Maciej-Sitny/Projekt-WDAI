@@ -1,22 +1,20 @@
 import React, { useState } from "react";
-import "bootstrap/dist/css/bootstrap.min.css";
 
 const CreateOrder = ({ cartItems, userId, totalAmount }) => {
-  const [orders, setOrders] = useState([]);
+  const [shippingAddress, setShippingAddress] = useState("");
+  const [city, setCity] = useState("");
+  const [postalCode, setPostalCode] = useState("");
+  const [country, setCountry] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
   const [orderMessage, setOrderMessage] = useState("");
-  const [address, setAddress] = useState("");
 
   const createOrder = async () => {
-    if (!address.trim()) {
-      setOrderMessage("Address is required.");
+    if (!shippingAddress || !city || !postalCode || !country || !phoneNumber) {
+      setOrderMessage("All fields are required.");
       return;
     }
 
     const token = localStorage.getItem("authToken");
-    if (!userId) {
-      console.error("Invalid user ID from token.");
-      return;
-    }
 
     try {
       const response = await fetch(`http://localhost:5000/api/orders`, {
@@ -28,8 +26,12 @@ const CreateOrder = ({ cartItems, userId, totalAmount }) => {
         body: JSON.stringify({
           userId,
           products: cartItems,
-          totalAmount: totalAmount,
-          address: address,
+          totalAmount,
+          shippingAddress,
+          city,
+          postalCode,
+          country,
+          phoneNumber,
         }),
       });
 
@@ -38,8 +40,7 @@ const CreateOrder = ({ cartItems, userId, totalAmount }) => {
       }
 
       const newOrder = await response.json();
-      setOrders((prevOrders) => [...prevOrders, newOrder]);
-      setOrderMessage("Product ordered successfully!");
+      setOrderMessage("Order created successfully!");
 
       // Clear the cart
       await fetch(`http://localhost:5000/api/cart/${userId}`, {
@@ -49,10 +50,15 @@ const CreateOrder = ({ cartItems, userId, totalAmount }) => {
         },
       });
 
-      setAddress(""); // Clear the address field after a successful order
+      // Clear the form
+      setShippingAddress("");
+      setCity("");
+      setPostalCode("");
+      setCountry("");
+      setPhoneNumber("");
     } catch (error) {
       console.error("Error creating order:", error);
-      setOrderMessage("Failed to order product.");
+      setOrderMessage("Failed to create order.");
     }
   };
 
@@ -60,16 +66,72 @@ const CreateOrder = ({ cartItems, userId, totalAmount }) => {
     <div className="container mt-4 p-4 border rounded shadow">
       <h2 className="mb-4 text-center">Create Order</h2>
       <div className="form-group mb-3">
-        <label htmlFor="address" className="form-label">
-          Shipping Address
+        <label htmlFor="shippingAddress" className="form-label">
+          Shipping Address:
         </label>
         <input
           type="text"
           className="form-control"
-          id="address"
+          id="shippingAddress"
           placeholder="Enter your shipping address"
-          value={address}
-          onChange={(e) => setAddress(e.target.value)}
+          value={shippingAddress}
+          onChange={(e) => setShippingAddress(e.target.value)}
+          required
+        />
+      </div>
+      <div className="form-group mb-3">
+        <label htmlFor="city" className="form-label">
+          City:
+        </label>
+        <input
+          type="text"
+          className="form-control"
+          id="city"
+          placeholder="Enter your city"
+          value={city}
+          onChange={(e) => setCity(e.target.value)}
+          required
+        />
+      </div>
+      <div className="form-group mb-3">
+        <label htmlFor="postalCode" className="form-label">
+          Postal Code:
+        </label>
+        <input
+          type="text"
+          className="form-control"
+          id="postalCode"
+          placeholder="Enter your postal code"
+          value={postalCode}
+          onChange={(e) => setPostalCode(e.target.value)}
+          required
+        />
+      </div>
+      <div className="form-group mb-3">
+        <label htmlFor="country" className="form-label">
+          Country:
+        </label>
+        <input
+          type="text"
+          className="form-control"
+          id="country"
+          placeholder="Enter your country"
+          value={country}
+          onChange={(e) => setCountry(e.target.value)}
+          required
+        />
+      </div>
+      <div className="form-group mb-3">
+        <label htmlFor="phoneNumber" className="form-label">
+          Phone Number:
+        </label>
+        <input
+          type="text"
+          className="form-control"
+          id="phoneNumber"
+          placeholder="Enter your phone number"
+          value={phoneNumber}
+          onChange={(e) => setPhoneNumber(e.target.value)}
           required
         />
       </div>
@@ -80,7 +142,9 @@ const CreateOrder = ({ cartItems, userId, totalAmount }) => {
         <button
           className="btn btn-primary"
           onClick={createOrder}
-          disabled={!address.trim()}
+          disabled={
+            !shippingAddress || !city || !postalCode || !country || !phoneNumber
+          }
         >
           Create Order
         </button>

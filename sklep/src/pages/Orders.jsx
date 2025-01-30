@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { jwtDecode } from "jwt-decode";
+import { Link } from "react-router-dom";
 
 const Orders = () => {
   const [orders, setOrders] = useState([]);
@@ -30,7 +31,7 @@ const Orders = () => {
 
       try {
         const response = await fetch(
-          `http://localhost:5000/api/orders/${userId}`,
+          `http://localhost:5000/api/orders/user/${userId}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -103,6 +104,12 @@ const Orders = () => {
                       <strong>Total Products:</strong> {order.products.length}
                     </span>
                   </div>
+                  <Link
+                    to={`/orders/${order.id}`}
+                    className="btn btn-primary mt-2"
+                  >
+                    View Details
+                  </Link>
                 </div>
               </div>
             </div>
