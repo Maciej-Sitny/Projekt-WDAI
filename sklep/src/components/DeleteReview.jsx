@@ -2,31 +2,27 @@ import React from "react";
 
 const DeleteReview = ({ userId, productId }) => {
   const handleDelete = async () => {
-    if (!window.confirm("Czy na pewno chcesz usunąć tę opinię?")) {
-      return; // Abort if the user cancels the confirmation dialog
-    }
-
     try {
-      const token = localStorage.getItem("authToken"); // Retrieve token from localStorage
       const response = await fetch(
         `http://localhost:5000/api/reviews/${userId}/${productId}`,
         {
           method: "DELETE",
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${localStorage.getItem("authToken")}`,
           },
         }
       );
-      if (response.ok) {
-        alert("Opinia została usunięta pomyślnie.");
-        window.location.reload(); // Reload page to update reviews
-      } else {
-        console.error("Błąd podczas usuwania opinii:", response.statusText);
-        alert("Wystąpił problem podczas usuwania opinii. Spróbuj ponownie.");
+
+      if (!response.ok) {
+        throw new Error("Failed to delete review.");
       }
+
+      const data = await response.json();
+      console.log("Review deleted successfully:", data);
+      window.location.reload(); // Odśwież stronę po usunięciu opinii
     } catch (error) {
-      console.error("Błąd podczas usuwania opinii:", error);
-      alert("Wystąpił błąd. Spróbuj ponownie później.");
+      console.error("Error deleting review:", error);
+      setError("Failed to delete review. Please try again.");
     }
   };
 

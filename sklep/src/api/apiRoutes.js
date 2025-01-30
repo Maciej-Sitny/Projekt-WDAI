@@ -13,6 +13,7 @@ import {
   getReviews,
   deleteReview,
   editReview,
+  updateCartItemQuantity,
 } from "./apiController.js";
 const router = Router();
 import authMiddleware from "./authMiddleware.js";
@@ -31,10 +32,11 @@ router.post("/cart", authMiddleware, addToCart);
 router.get("/cart/:userId", authMiddleware, getCart);
 router.delete("/cart/:userId/:productId", authMiddleware, deleteCartItem);
 router.delete("/cart/:userId", authMiddleware, clearCart);
+router.put("/cart/:userId/:productId", authMiddleware, updateCartItemQuantity);
 
 // Reviews routes
-router.post("/reviews", authMiddleware, addReview);
-router.get("/reviews/:productId", getReviews);
-router.delete("/reviews/:userId/:productId", authMiddleware, deleteReview);
-router.put("/reviews/:userId/:productId", authMiddleware, editReview);
+router.post("/reviews", authMiddleware, addReview); // Dodaj opinię
+router.put("/reviews/:userId/:productId", authMiddleware, editReview); // Edytuj opinię
+router.delete("/reviews/:userId/:productId", authMiddleware, deleteReview); // Usuń opinię
+router.get("/reviews/:productId", getReviews); // Pobierz opinie dla produktu
 export default router;

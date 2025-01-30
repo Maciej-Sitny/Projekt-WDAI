@@ -75,6 +75,11 @@ const Cart = sequelize.define(
       type: DataTypes.INTEGER,
       allowNull: false,
     },
+    quantity: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 1, // Domyślna ilość to 1
+    },
     createdAt: {
       type: DataTypes.DATE,
       defaultValue: DataTypes.NOW,
@@ -100,10 +105,6 @@ const Review = sequelize.define(
     },
     productId: {
       type: DataTypes.INTEGER,
-      allowNull: false,
-    },
-    username: {
-      type: DataTypes.STRING,
       allowNull: false,
     },
     rating: {

@@ -62,10 +62,51 @@ export const createOrder = async (orderData) => {
   }
 };
 
+export const updateCartItemQuantityService = async (
+  userId,
+  productId,
+  quantity
+) => {
+  try {
+    // Find the cart item for the given user and product
+    const cartItem = await Cart.findOne({ where: { userId, productId } });
+
+    // If the cart item doesn't exist, throw an error
+    if (!cartItem) {
+      throw new Error("Cart item not found");
+    }
+
+    // Update the quantity
+    cartItem.quantity = quantity;
+    await cartItem.save();
+
+    // Return the updated cart item
+    return cartItem;
+  } catch (error) {
+    console.error("Error updating cart item quantity in service:", error);
+    throw error; // Re-throw the error for the controller to handle
+  }
+};
+
 export const addToCart = async (cartData) => {
   try {
-    const newCartItem = await Cart.create(cartData);
-    return newCartItem;
+    const { userId, productId, quantity } = cartData;
+
+    // Sprawdź, czy produkt już istnieje w koszyku użytkownika
+    const existingCartItem = await Cart.findOne({
+      where: { userId, productId },
+    });
+
+    if (existingCartItem) {
+      // Jeśli produkt już istnieje, zaktualizuj ilość
+      existingCartItem.quantity += quantity;
+      await existingCartItem.save();
+      return existingCartItem;
+    } else {
+      // Jeśli produkt nie istnieje, dodaj nowy wpis do koszyka
+      const newCartItem = await Cart.create(cartData);
+      return newCartItem;
+    }
   } catch (error) {
     console.error("Error adding to cart:", error);
     throw error;
@@ -74,17 +115,19 @@ export const addToCart = async (cartData) => {
 
 export const getCart = async (userId) => {
   try {
+    // Find all cart items for the given user
     const cartItems = await Cart.findAll({ where: { userId } });
-    if (!cartItems.length) {
-      throw new Error(`No cart items found for user with ID ${userId}`);
+
+    // If no cart items are found, return an empty array
+    if (!cartItems || cartItems.length === 0) {
+      return [];
     }
+
+    // Return the cart items
     return cartItems;
   } catch (error) {
-    console.error(
-      `Error fetching cart items for user with ID ${userId}:`,
-      error
-    );
-    throw error;
+    console.error("Error fetching cart items in service:", error);
+    throw error; // Re-throw the error for the controller to handle
   }
 };
 
@@ -133,10 +176,16 @@ export const checkUserReview = async (userId, productId) => {
 export const addReview = async (reviewData) => {
   try {
     const { userId, productId } = reviewData;
-    const hasReview = await checkUserReview(userId, productId);
-    if (hasReview) {
-      throw new Error("User has already reviewed this product");
+
+    // Sprawdź, czy użytkownik już dodał opinię dla tego produktu
+    const existingReview = await Review.findOne({
+      where: { userId, productId },
+    });
+    if (existingReview) {
+      throw new Error("User has already reviewed this product.");
     }
+
+    // Dodaj nową opinię
     const newReview = await Review.create(reviewData);
     return newReview;
   } catch (error) {
@@ -150,28 +199,22 @@ export const getReviews = async (productId) => {
     const reviews = await Review.findAll({ where: { productId } });
     return reviews;
   } catch (error) {
-    console.error(
-      `Error fetching reviews for product with ID ${productId}:`,
-      error
-    );
+    console.error("Error fetching reviews:", error);
     throw error;
   }
 };
 
 export const deleteReview = async (userId, productId) => {
   try {
+    // Znajdź i usuń opinię użytkownika dla danego produktu
     const result = await Review.destroy({ where: { userId, productId } });
     if (result === 0) {
-      throw new Error(
-        `Review not found for user ID ${userId} and product ID ${productId}`
-      );
+      throw new Error("Review not found.");
     }
-    return { message: "Review deleted successfully" };
+
+    return { message: "Review deleted successfully." };
   } catch (error) {
-    console.error(
-      `Error deleting review for user ID ${userId} and product ID ${productId}:`,
-      error
-    );
+    console.error("Error deleting review:", error);
     throw error;
   }
 };
@@ -179,19 +222,17 @@ export const deleteReview = async (userId, productId) => {
 // Add the editReview function
 export const editReview = async (userId, productId, reviewData) => {
   try {
+    // Znajdź opinię użytkownika dla danego produktu
     const review = await Review.findOne({ where: { userId, productId } });
-    if (!review)
-      throw new Error(
-        `Review not found for user ID ${userId} and product ID ${productId}`
-      );
+    if (!review) {
+      throw new Error("Review not found.");
+    }
 
+    // Zaktualizuj opinię
     await review.update(reviewData);
     return review;
   } catch (error) {
-    console.error(
-      `Error editing review for user ID ${userId} and product ID ${productId}:`,
-      error
-    );
+    console.error("Error editing review:", error);
     throw error;
   }
 };

@@ -20,47 +20,57 @@ const AddReview = () => {
     }
   }, [productId]);
 
+  const handleEdit = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:5000/api/reviews/${userId}/${productId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+          },
+          body: JSON.stringify({ rating, comment }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to edit review.");
+      }
+
+      const data = await response.json();
+      console.log("Review edited successfully:", data);
+      window.location.reload(); // Odśwież stronę po edycji opinii
+    } catch (error) {
+      console.error("Error editing review:", error);
+      setError("Failed to edit review. Please try again.");
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!comment) return;
 
-    // Check if the user has already submitted a review for this product
-    const existingReviewResponse = await fetch(
-      `http://localhost:5000/api/reviews/${userId}/${productId}`,
-      {
+    try {
+      const response = await fetch("http://localhost:5000/api/reviews", {
+        method: "POST",
         headers: {
+          "Content-Type": "application/json",
           Authorization: `Bearer ${localStorage.getItem("authToken")}`,
         },
+        body: JSON.stringify({ userId, productId, rating, comment }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to submit review.");
       }
-    );
 
-    if (existingReviewResponse.ok) {
-      const existingReview = await existingReviewResponse.json();
-      if (existingReview) {
-        setError("You can only submit one review per product.");
-        return;
-      }
-    }
-
-    const url = editMode
-      ? `http://localhost:5000/api/reviews/${userId}/${productId}`
-      : "http://localhost:5000/api/reviews";
-    const method = editMode ? "PUT" : "POST";
-
-    const response = await fetch(url, {
-      method,
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("authToken")}`,
-      },
-      body: JSON.stringify({ userId, username, rating, comment, productId }),
-    });
-
-    if (response.ok) {
-      console.log("Review submitted successfully:", await response.json());
-      window.location.reload();
-    } else {
-      setError("Można dodać tylko jedną opinię na produkt.");
+      const data = await response.json();
+      console.log("Review submitted successfully:", data);
+      window.location.reload(); // Odśwież stronę po dodaniu opinii
+    } catch (error) {
+      console.error("Error submitting review:", error);
+      setError("Failed to submit review. Please try again.");
     }
   };
 
