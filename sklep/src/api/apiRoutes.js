@@ -14,6 +14,7 @@ import {
   deleteReview,
   editReview,
   updateCartItemQuantity,
+  getReviewByUserAndProduct,
 } from "./apiController.js";
 const router = Router();
 import authMiddleware from "./authMiddleware.js";
@@ -36,7 +37,9 @@ router.put("/cart/:userId/:productId", authMiddleware, updateCartItemQuantity);
 
 // Reviews routes
 router.post("/reviews", authMiddleware, addReview); // Dodaj opinię
-router.put("/reviews/:userId/:productId", authMiddleware, editReview); // Edytuj opinię
+router.put("/reviews/:userId/:productId", authMiddleware, editReview);
 router.delete("/reviews/:userId/:productId", authMiddleware, deleteReview); // Usuń opinię
 router.get("/reviews/:productId", getReviews); // Pobierz opinie dla produktu
+router.get("/reviews/:userId/:productId", getReviewByUserAndProduct); // Pobierz opinię użytkownika dla produktu
+
 export default router;

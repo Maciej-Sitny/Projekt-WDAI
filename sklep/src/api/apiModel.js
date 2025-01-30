@@ -5,12 +5,12 @@ import sequelize from "./apiDatabase.js";
 const User = sequelize.define(
   "User",
   {
-    email: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      unique: true,
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
     },
-    username: {
+    email: {
       type: DataTypes.STRING,
       allowNull: false,
       unique: true,
@@ -18,6 +18,10 @@ const User = sequelize.define(
     password: {
       type: DataTypes.STRING,
       allowNull: false,
+    },
+    role: {
+      type: DataTypes.ENUM("user", "admin"), // Role: user lub admin
+      defaultValue: "user", // Domyślna rola to "user"
     },
     createdAt: {
       type: DataTypes.DATE,
@@ -105,6 +109,10 @@ const Review = sequelize.define(
     },
     productId: {
       type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    username: {
+      type: DataTypes.STRING,
       allowNull: false,
     },
     rating: {

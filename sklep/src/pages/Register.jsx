@@ -2,16 +2,11 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
 function Register() {
-  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [repeatPassword, setRepeatPassword] = useState("");
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
   const [isButtonDisabled, setButtonDisabled] = useState(true);
-
-  const handleUsernameChange = (event) => {
-    setUsername(event.target.value);
-  };
 
   const handleEmailChange = (event) => {
     setEmail(event.target.value);
@@ -74,7 +69,6 @@ function Register() {
         body: JSON.stringify({
           email,
           password,
-          username,
         }),
       });
 
@@ -98,7 +92,7 @@ function Register() {
   };
 
   const validateInformation = () => {
-    if (!username || !password || !repeatPassword || !email) {
+    if (!password || !repeatPassword || !email) {
       setButtonDisabled(true);
     } else {
       setButtonDisabled(false);
@@ -107,7 +101,7 @@ function Register() {
 
   React.useEffect(() => {
     validateInformation();
-  }, [username, password, repeatPassword, email]);
+  }, [password, repeatPassword, email]);
 
   return (
     <div className="container mt-5">
@@ -122,19 +116,6 @@ function Register() {
           }}
         >
           <form>
-            <div className="mb-3">
-              <label htmlFor="username" className="form-label">
-                Nazwa użytkownika
-              </label>
-              <input
-                type="text"
-                id="username"
-                value={username}
-                onChange={handleUsernameChange}
-                className="form-control"
-                placeholder="Wpisz nazwę użytkownika"
-              />
-            </div>
             <div className="mb-3">
               <label htmlFor="email" className="form-label">
                 Adres e-mail

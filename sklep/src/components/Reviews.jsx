@@ -2,13 +2,21 @@ import React, { useEffect, useState } from "react";
 import Review from "./Review";
 import AddReview from "./AddReview";
 import { useParams } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
 
 const Reviews = () => {
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
   const { id: productId } = useParams();
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
+    const token = localStorage.getItem("authToken");
+    if (token) {
+      const decoded = jwtDecode(token);
+      setIsAdmin(decoded.role === "admin"); // Check if the user is an admin
+    }
+
     const fetchReviews = async () => {
       try {
         const response = await fetch(
@@ -40,7 +48,7 @@ const Reviews = () => {
         <div className="row g-4">
           {reviews.map((review, index) => (
             <div key={index} className="col-md-6 col-lg-4">
-              <Review {...review} />
+              <Review {...review} isAdmin={isAdmin} />
             </div>
           ))}
         </div>

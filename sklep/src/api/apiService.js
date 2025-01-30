@@ -8,11 +8,18 @@ export const login = async (credentials) => {
     const user = await User.findOne({
       where: { email: credentials.email, password: credentials.password },
     });
-    if (!user) throw new Error("Invalid credentials");
 
-    const token = jwt.sign({ id: user.id, email: user.email }, SECRET_KEY, {
-      expiresIn: "1h",
-    });
+    if (!user) {
+      throw new Error("Invalid credentials.");
+    }
+
+    const token = jwt.sign(
+      { id: user.id, email: user.email, role: user.role },
+      SECRET_KEY,
+      {
+        expiresIn: "1h",
+      }
+    );
 
     return { user, token };
   } catch (error) {
@@ -173,11 +180,11 @@ export const checkUserReview = async (userId, productId) => {
   }
 };
 
-export const addReview = async (reviewData) => {
+export const addReviewService = async (reviewData) => {
   try {
     const { userId, productId } = reviewData;
 
-    // Sprawdź, czy użytkownik już dodał opinię dla tego produktu
+    // Check if the user has already reviewed this product
     const existingReview = await Review.findOne({
       where: { userId, productId },
     });
@@ -185,7 +192,7 @@ export const addReview = async (reviewData) => {
       throw new Error("User has already reviewed this product.");
     }
 
-    // Dodaj nową opinię
+    // Add the new review
     const newReview = await Review.create(reviewData);
     return newReview;
   } catch (error) {
@@ -194,7 +201,7 @@ export const addReview = async (reviewData) => {
   }
 };
 
-export const getReviews = async (productId) => {
+export const getReviewsService = async (productId) => {
   try {
     const reviews = await Review.findAll({ where: { productId } });
     return reviews;
@@ -204,14 +211,16 @@ export const getReviews = async (productId) => {
   }
 };
 
-export const deleteReview = async (userId, productId) => {
+export const deleteReviewService = async (userId, productId, isAdmin) => {
   try {
-    // Znajdź i usuń opinię użytkownika dla danego produktu
-    const result = await Review.destroy({ where: { userId, productId } });
-    if (result === 0) {
+    // Znajdź opinię do usunięcia
+    const review = await Review.findOne({ where: { userId, productId } });
+    if (!review) {
       throw new Error("Review not found.");
     }
 
+    // Usuń opinię
+    await review.destroy();
     return { message: "Review deleted successfully." };
   } catch (error) {
     console.error("Error deleting review:", error);
@@ -220,9 +229,9 @@ export const deleteReview = async (userId, productId) => {
 };
 
 // Add the editReview function
-export const editReview = async (userId, productId, reviewData) => {
+export const editReviewService = async (userId, productId, reviewData) => {
   try {
-    // Znajdź opinię użytkownika dla danego produktu
+    // Znajdź opinię do edycji
     const review = await Review.findOne({ where: { userId, productId } });
     if (!review) {
       throw new Error("Review not found.");
@@ -233,6 +242,16 @@ export const editReview = async (userId, productId, reviewData) => {
     return review;
   } catch (error) {
     console.error("Error editing review:", error);
+    throw error;
+  }
+};
+
+export const getReviewByUserAndProductService = async (userId, productId) => {
+  try {
+    const review = await Review.findOne({ where: { userId, productId } });
+    return review;
+  } catch (error) {
+    console.error("Error fetching review:", error);
     throw error;
   }
 };

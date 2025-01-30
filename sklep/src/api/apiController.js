@@ -8,10 +8,11 @@ import {
   getCart as getCartService,
   deleteCartItem as deleteCartItemService,
   clearCart as clearCartService,
-  addReview as addReviewService,
-  getReviews as getReviewsService,
-  deleteReview as deleteReviewService,
-  editReview as editReviewService,
+  addReviewService as addReviewService,
+  getReviewsService as getReviewsService,
+  deleteReviewService as deleteReviewService,
+  editReviewService as editReviewService,
+  getReviewByUserAndProductService as getReviewByUserId,
 } from "./apiService.js";
 
 // apiController.js
@@ -188,11 +189,20 @@ export const getReviews = async (req, res) => {
 export const deleteReview = async (req, res) => {
   try {
     const { userId, productId } = req.params;
-    const data = await deleteReviewService(userId, productId);
-    res.status(200).json(data);
+    const { isAdmin } = req.body;
+
+    // Wywołaj funkcję usuwania opinii
+    const result = await deleteReviewService(userId, productId, isAdmin);
+    res.status(200).json(result);
   } catch (error) {
+    console.error("Error deleting review:", error);
+
     if (error.message === "Review not found.") {
       res.status(404).json({ message: error.message });
+    } else if (
+      error.message === "You are not authorized to delete this review."
+    ) {
+      res.status(403).json({ message: error.message });
     } else {
       res
         .status(500)
@@ -204,10 +214,17 @@ export const deleteReview = async (req, res) => {
 export const editReview = async (req, res) => {
   try {
     const { userId, productId } = req.params;
-    const reviewData = req.body;
-    const data = await editReviewService(userId, productId, reviewData);
-    res.status(200).json(data);
+    const { rating, comment } = req.body;
+
+    // Wywołaj funkcję edycji opinii
+    const updatedReview = await editReviewService(userId, productId, {
+      rating,
+      comment,
+    });
+    res.status(200).json(updatedReview);
   } catch (error) {
+    console.error("Error editing review:", error);
+
     if (error.message === "Review not found.") {
       res.status(404).json({ message: error.message });
     } else {
@@ -215,5 +232,17 @@ export const editReview = async (req, res) => {
         .status(500)
         .json({ message: "Error editing review", error: error.message });
     }
+  }
+};
+
+export const getReviewByUserAndProduct = async (req, res) => {
+  try {
+    const { userId, productId } = req.params;
+    const data = await getReviewByUserId(userId, productId);
+    res.status(200).json(data);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error fetching review", error: error.message });
   }
 };
