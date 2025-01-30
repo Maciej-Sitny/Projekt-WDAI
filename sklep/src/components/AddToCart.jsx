@@ -39,7 +39,7 @@ const AddToCart = ({ product }) => {
   };
 
   return (
-    <button className="btn btn-primary" onClick={handleCart}>
+    <button className="btn btn-warning" onClick={handleCart}>
       Dodaj do koszyka
     </button>
   );

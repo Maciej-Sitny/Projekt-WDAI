@@ -80,3 +80,11 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+.bottom-center-gif {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000; /* Ensure it is above other content */
+}
