@@ -13,7 +13,7 @@ const Orders = () => {
       const decoded = jwtDecode(token);
       return decoded.id;
     } catch (error) {
-      console.error("Error decoding token:", error);
+      console.error("Błąd dekodowania tokena:", error);
       return null;
     }
   };
@@ -25,7 +25,7 @@ const Orders = () => {
 
     const fetchOrders = async () => {
       if (!userId) {
-        console.error("Invalid user ID from token.");
+        console.error("Nieprawidłowy identyfikator użytkownika z tokena.");
         return;
       }
 
@@ -40,13 +40,13 @@ const Orders = () => {
         );
 
         if (!response.ok) {
-          throw new Error("Failed to fetch orders.");
+          throw new Error("Nie udało się pobrać zamówień.");
         }
 
         const data = await response.json();
         setOrders(data);
       } catch (error) {
-        console.error("Error fetching orders:", error);
+        console.error("Błąd pobierania zamówień:", error);
       }
     };
 
@@ -56,7 +56,7 @@ const Orders = () => {
         const data = await response.json();
         setProducts(data);
       } catch (error) {
-        console.error("Error fetching products:", error);
+        console.error("Błąd pobierania produktów:", error);
       }
     };
 
@@ -66,15 +66,15 @@ const Orders = () => {
 
   const getProductDetails = (productId) => {
     const product = products.find((product) => product.id === productId);
-    return product ? product.title : "Unknown Product";
+    return product ? product.title : "Nieznany produkt";
   };
 
   return (
     <div className="container mt-5">
-      <h2 className="mb-4 text-center">Your Orders</h2>
+      <h2 className="mb-4 text-center">Twoje zamówienia</h2>
       {orders.length === 0 ? (
         <div className="alert alert-info text-center">
-          You have no orders yet. Start shopping now!
+          Nie masz jeszcze żadnych zamówień. Zacznij zakupy teraz!
         </div>
       ) : (
         <div className="row">
@@ -82,14 +82,14 @@ const Orders = () => {
             <div key={order.id} className="col-md-6 col-lg-4 mb-4">
               <div className="card border-primary h-100">
                 <div className="card-header bg-primary text-white">
-                  <h5 className="mb-0">Order ID: {order.id}</h5>
+                  <h5 className="mb-0">ID zamówienia: {order.id}</h5>
                 </div>
                 <div className="card-body">
                   <p className="card-text">
                     <strong>Status:</strong>{" "}
                     <span className="badge bg-success">{order.status}</span>
                   </p>
-                  <h6>Products:</h6>
+                  <h6>Produkty:</h6>
                   <ul className="list-group list-group-flush">
                     {order.products.map((product, index) => (
                       <li key={index} className="list-group-item">
@@ -101,14 +101,15 @@ const Orders = () => {
                 <div className="card-footer">
                   <div>
                     <span>
-                      <strong>Total Products:</strong> {order.products.length}
+                      <strong>Łączna liczba produktów:</strong>{" "}
+                      {order.products.length}
                     </span>
                   </div>
                   <Link
                     to={`/orders/${order.id}`}
                     className="btn btn-primary mt-2"
                   >
-                    View Details
+                    Zobacz szczegóły
                   </Link>
                 </div>
               </div>

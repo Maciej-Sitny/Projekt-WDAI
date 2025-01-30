@@ -11,7 +11,9 @@ const AllProducts = () => {
     fetch("https://fakestoreapi.com/products")
       .then((response) => response.json())
       .then((data) => setProducts(data))
-      .catch((error) => console.error("Error fetching products:", error));
+      .catch((error) =>
+        console.error("Błąd podczas pobierania produktów:", error)
+      );
   }, []);
 
   const handleSearchChange = (event) => {

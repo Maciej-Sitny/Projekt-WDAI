@@ -6,7 +6,7 @@ const Navbar = () => {
     <nav className="navbar navbar-expand-lg navbar-light bg-light fixed-top">
       <div className="container-fluid">
         <Link className="navbar-brand" to="/">
-          MyApp
+          MojaAplikacja
         </Link>
         <button
           className="navbar-toggler"
@@ -15,7 +15,7 @@ const Navbar = () => {
           data-bs-target="#navbarNav"
           aria-controls="navbarNav"
           aria-expanded="false"
-          aria-label="Toggle navigation"
+          aria-label="Przełącz nawigację"
         >
           <span className="navbar-toggler-icon"></span>
         </button>
@@ -23,32 +23,32 @@ const Navbar = () => {
           <ul className="navbar-nav">
             <li className="nav-item">
               <Link className="nav-link" to="/">
-                Home
+                Strona główna
               </Link>
             </li>
             <li className="nav-item">
               <Link className="nav-link" to="/products">
-                Products
+                Produkty
               </Link>
             </li>
             <li className="nav-item">
               <Link className="nav-link" to="/register">
-                Register
+                Rejestracja
               </Link>
             </li>
             <li className="nav-item">
               <Link className="nav-link" to="/login">
-                Login
+                Logowanie
               </Link>
             </li>
             <li className="nav-item">
               <Link className="nav-link" to="/cart">
-                Cart
+                Koszyk
               </Link>
             </li>
             <li className="nav-item">
               <Link className="nav-link" to="/orders">
-                Orders
+                Zamówienia
               </Link>
             </li>
           </ul>
