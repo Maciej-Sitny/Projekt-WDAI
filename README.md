@@ -29,6 +29,22 @@ Aby uruchomić projekt lokalnie, wykonaj poniższe kroki:
    npm run preview
    ```
 
+## 🌐 Uruchomienie serwera backend
+Backend projektu znajduje się w folderze `api`. Aby go uruchomić, wykonaj następujące kroki:
+
+1. Przejdź do katalogu `api`:
+   ```sh
+   cd api
+   ```
+2. Zainstaluj wszystkie zależności:
+   ```sh
+   npm install
+   ```
+3. Uruchom serwer backendu:
+   ```sh
+   npm start
+   ```
+
 ## 🛠 Użyte technologie i biblioteki
 Projekt został stworzony przy użyciu następujących technologii:
 
