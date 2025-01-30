@@ -2,6 +2,11 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 const Navbar = () => {
+  const handleLogout = () => {
+    localStorage.removeItem("authToken");
+    alert("Wylogowano pomyślnie.");
+  };
+
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-light fixed-top">
       <div className="container-fluid">
@@ -59,6 +64,11 @@ const Navbar = () => {
               <Link className="nav-link" to="/login">
                 Logowanie
               </Link>
+            </li>
+            <li className="nav-item">
+              <button className="nav-link btn" onClick={handleLogout}>
+                Wyloguj
+              </button>
             </li>
           </ul>
         </div>
