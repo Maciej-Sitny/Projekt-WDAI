@@ -160,7 +160,7 @@ function Register() {
               type="button"
               disabled={isButtonDisabled}
               onClick={validatePasswords}
-              className="btn btn-primary w-100"
+              className="btn btn-warning w-100"
             >
               Zarejestruj się
             </button>

@@ -62,9 +62,9 @@ const AddToCart = ({ product }) => {
           onChange={(e) => setQuantity(parseInt(e.target.value, 10))}
         />
       </div>
-      <button className="btn btn-primary" onClick={handleCart}>
-        Add to Cart
-      </button>
+      <button className="btn btn-warning" onClick={handleCart}>
+      Dodaj do koszyka
+    </button>
     </div>
   );
 };

@@ -24,11 +24,11 @@ const AllProducts = () => {
 
   return (
     <div className="container my-4">
-      <h1 className="text-center mb-4">All Products</h1>
+      <h1 className="text-center mb-4">Wszystkie produkty</h1>
       <div className="mb-4">
         <input
           type="text"
-          placeholder="Search products..."
+          placeholder="Wyszukaj przedmiot..."
           value={searchTerm}
           onChange={handleSearchChange}
           className="form-control"
@@ -51,15 +51,15 @@ const AllProducts = () => {
                   style={{ maxHeight: "50px" }}
                 ></p>
               </div>
-              <div className="card-footer">
+              <div className="card-footer flex-column d-flex align-items-center justify-content-center">
                 <p className="text-muted mb-1">
-                  Price: ${product.price.toFixed(2)}
+                  Cena: ${product.price.toFixed(2)}
                 </p>
                 <Link
                   to={`/products/${product.id}`}
-                  className="btn btn-primary me-2"
+                  className="btn btn-warning  mb-2"
                 >
-                  View Details
+                  Zobacz opis
                 </Link>
                 <AddToCart product={{ id: product.id, quantity: 1 }} />
               </div>
