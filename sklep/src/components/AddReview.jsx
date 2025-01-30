@@ -121,8 +121,8 @@ const AddReview = () => {
           ))}
         </div>
       </div>
-      <button type="submit" className="btn btn-primary">
-        <i className="bi bi-send me-2"></i>
+      <button type="submit" className="btn btn-warning">
+        <i className="bi bi-send "></i>
         {editMode ? "Zapisz zmiany" : "Dodaj opinię"}
       </button>
     </form>

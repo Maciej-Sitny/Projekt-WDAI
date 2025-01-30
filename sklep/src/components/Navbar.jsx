@@ -5,8 +5,9 @@ const Navbar = () => {
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-light fixed-top">
       <div className="container-fluid">
-        <Link className="navbar-brand" to="/">
-          MojaAplikacja
+        <Link className="navbar-brand" style={{fontFamily:"caveat", fontSize:"30px"}} to="/">
+          blob
+          <img src={"src/images/home/blob (3).svg"} alt={"blob"} style={{top: "10%", left: "60%", height: "50px", width: "50px"}}/>
         </Link>
         <button
           className="navbar-toggler"

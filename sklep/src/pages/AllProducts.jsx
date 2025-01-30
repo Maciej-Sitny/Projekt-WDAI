@@ -50,7 +50,7 @@ const AllProducts = () => {
                style={{top: "55%", left: "30%", height: "100px", width: "100px"}}/>
           <img src={"src/images/home/blob (12).svg"} alt={"blob"} className={"position-fixed z-0"}
                style={{top: "43%", left: "15%", height: "100px", width: "100px"}}/>
-          <h1 className="text-center mb-4 position-relative">Wszystkie produkty</h1>
+          <h1 className="text-center t-4 position-relative">Wszystkie produkty</h1>
           <div className="mb-4 position-relative">
               <input
                   type="text"
@@ -93,6 +93,15 @@ const AllProducts = () => {
                   </div>
               ))}
           </div>
+          <footer className="text-center mt-4 position-relative rounded-5" style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              backgroundColor: "#10375C",
+              height: "50px"
+          }}>
+              <p style={{color: "#F4F6FF"}}>Autorzy: Igor Piesik & Maciej Sitny</p>
+          </footer>
       </div>
   );
 };

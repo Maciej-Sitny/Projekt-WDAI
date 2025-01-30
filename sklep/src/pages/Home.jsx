@@ -57,7 +57,7 @@ const Home = () => {
                style={{top: "55%", left: "30%", height: "100px", width: "100px"}}/>
           <img src={"src/images/home/blob (12).svg"} alt={"blob"} className={"position-fixed z-0"}
                style={{top: "43%", left: "15%", height: "100px", width: "100px"}}/>
-          <div className={"container-fluid bg-warning  position-relative  z-1"} style={{marginBottom: "5%", marginTop: "10%"}}>
+          <div className={"container-fluid bg-warning  position-relative rounded-5 z-1"} style={{marginBottom: "5%", marginTop: "10%"}}>
               <div className="row w-100 ">
                   <div className="col-6 d-flex justify-content-center align-items-center">
                       <div className="d-flex flex-column justify-content-center align-items-center">
@@ -179,14 +179,14 @@ const Home = () => {
           </div>
           {/*<img src={"src/images/home/arrowDown.gif"} className={"bottom-center-gif"}*/}
           {/*     style={{height: "80px", width: "80px"}} alt="Loading..."/>*/}
-          <div className="container mt-5 bg-warning position-relative  z-1">
+          <div className="container mt-5 bg-warning position-relative rounded-5 z-1">
               <div className="row">
                   <div className="col-9 d-flex flex-column align-items-center p-5">
                       <h1 style={{fontSize: "10vw"}} className="fs-4">Zarejestruj się, by dostawać nasz newsletter</h1>
                       <p>Będziesz informowany, gdy pojawią się nowości, a także będziesz dostawał kody promocyjne.</p>
                   </div>
                   <div className="col-3 d-flex justify-content-end align-items-center">
-                      <Link to="/register" className="btn btn-light btn-lg mr-3">
+                      <Link to="/register" className="btn btn-lg mr-3" style={{background:"#10375C",color:"#F4F6FF"}}>
                           Zarejestruj się
                       </Link>
                   </div>
@@ -194,7 +194,7 @@ const Home = () => {
 
           </div>
 
-          <footer className="text-center mt-4 position-relative" style={{
+          <footer className="text-center mt-4 position-relative rounded-5" style={{
               display: "flex",
               justifyContent: "center",
               alignItems: "center",

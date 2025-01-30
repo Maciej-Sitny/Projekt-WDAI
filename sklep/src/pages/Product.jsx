@@ -49,7 +49,7 @@ const Product = () => {
           </div>
           <div className="col-md-7">
             <div className="card-body">
-              <h1 className="card-title text-primary">{product.title}</h1>
+              <h1 className="card-title text-warning">{product.title}</h1>
               <p className="card-text text-muted">{product.description}</p>
               <p className="card-text">
                 <strong>Cena:</strong> {product.price}$
