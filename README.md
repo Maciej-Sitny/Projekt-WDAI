@@ -1,4 +1,4 @@
-# 📌 Projekt
+# 📌 Projekt Prosty sklep internetowy
 
 ## 📖 Opis
 Projekt to nowoczesna aplikacja webowa stworzona przy użyciu technologii React oraz Express. Głównym celem jest dostarczenie interaktywnego interfejsu użytkownika oraz stabilnego backendu opartego na SQLite i Sequelize.
