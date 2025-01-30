@@ -138,7 +138,7 @@ const CreateOrder = ({ cartItems, userId, totalAmount }) => {
           Kwota całkowita: <strong>${totalAmount.toFixed(2)}</strong>
         </p>
         <button
-          className="btn btn-primary"
+          className="btn btn-warning"
           onClick={createOrder}
           disabled={
             !shippingAddress || !city || !postalCode || !country || !phoneNumber

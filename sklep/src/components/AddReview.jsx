@@ -15,7 +15,6 @@ const AddReview = () => {
     const token = localStorage.getItem("authToken");
     if (token) {
       const decoded = jwtDecode(token);
-      console.log("Zdekodowany token:", decoded);
       setUserId(decoded.id);
       setUsername(decoded.email.split("@")[0]);
 
@@ -64,8 +63,6 @@ const AddReview = () => {
         throw new Error("Nie udało się przesłać opinii.");
       }
 
-      const data = await response.json();
-      console.log("Opinia została pomyślnie przesłana:", data);
       window.location.reload();
     } catch (error) {
       console.error("Błąd podczas przesyłania opinii:", error);
@@ -74,13 +71,16 @@ const AddReview = () => {
   };
 
   return (
-    <form className="mt-4" onSubmit={handleSubmit}>
-      <h4 className="text-primary">
+    <form
+      className="mt-4 p-4 bg-light border rounded-4 shadow-sm"
+      onSubmit={handleSubmit}
+    >
+      <h4 className="text-warning fw-bold mb-3">
         {editMode ? "Edytuj opinię" : "Dodaj opinię"}
       </h4>
       {editMode && (
         <div className="alert alert-warning" role="alert">
-          Jesteś w trybie edycji
+          Tryb edycji – możesz zmienić swoją opinię.
         </div>
       )}
       {error && (
@@ -121,8 +121,8 @@ const AddReview = () => {
           ))}
         </div>
       </div>
-      <button type="submit" className="btn btn-warning">
-        <i className="bi bi-send "></i>
+      <button type="submit" className="btn btn-warning w-100">
+        <i className="bi bi-send me-2"></i>
         {editMode ? "Zapisz zmiany" : "Dodaj opinię"}
       </button>
     </form>

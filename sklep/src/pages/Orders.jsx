@@ -81,7 +81,7 @@ const Orders = () => {
           {orders.map((order) => (
             <div key={order.id} className="col-md-6 col-lg-4 mb-4">
               <div className="card border-primary h-100">
-                <div className="card-header bg-primary text-white">
+                <div className="card-header bg-warning text-white">
                   <h5 className="mb-0">ID zamówienia: {order.id}</h5>
                 </div>
                 <div className="card-body">
@@ -107,7 +107,7 @@ const Orders = () => {
                   </div>
                   <Link
                     to={`/orders/${order.id}`}
-                    className="btn btn-primary mt-2"
+                    className="btn btn-warning mt-2"
                   >
                     Zobacz szczegóły
                   </Link>

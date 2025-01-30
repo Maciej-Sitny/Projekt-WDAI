@@ -53,69 +53,86 @@ const OrderDetails = () => {
   };
 
   if (loading) {
-    return <div>Ładowanie...</div>;
+    return <div className="text-center mt-5">Ładowanie...</div>;
   }
 
   if (error) {
-    return <div className="alert alert-danger">{error}</div>;
+    return <div className="alert alert-danger text-center">{error}</div>;
   }
-
-  console.log("Dane zamówienia:", order);
 
   return (
     <div className="container mt-5">
-      <h2 className="text-center mb-4">Szczegóły zamówienia</h2>
-      {order && (
-        <div className="card shadow">
-          <div className="card-body">
-            <h5 className="card-title">ID zamówienia: {order.id}</h5>
-            <p className="card-text">
-              <strong>Status:</strong> {order.status || "N/A"}
-            </p>
-            <p className="card-text">
-              <strong>Łączna kwota:</strong> $
-              {order?.totalAmount?.toFixed(2) || "N/A"}
-            </p>
-            <p className="card-text">
-              <strong>Adres wysyłki:</strong> {order.shippingAddress || "N/A"}
-            </p>
-            <p className="card-text">
-              <strong>Miasto:</strong> {order.city || "N/A"}
-            </p>
-            <p className="card-text">
-              <strong>Kod pocztowy:</strong> {order.postalCode || "N/A"}
-            </p>
-            <p className="card-text">
-              <strong>Kraj:</strong> {order.country || "N/A"}
-            </p>
-            <p className="card-text">
-              <strong>Numer telefonu:</strong> {order.phoneNumber || "N/A"}
-            </p>
-            <h6 className="mt-4">Produkty:</h6>
-            <ul className="list-group">
-              {order.products?.map((product, index) => {
-                const productDetails = getProductDetails(product.productId);
-                return (
-                  <li key={index} className="list-group-item">
-                    {productDetails ? (
-                      <>
-                        <strong>{productDetails.title}</strong> - Ilość:{" "}
-                        {product.quantity} - Cena: ${productDetails.price}
-                      </>
-                    ) : (
-                      <>
-                        ID produktu: {product.productId} - Ilość:{" "}
-                        {product.quantity} - Utworzono:{" "}
-                        {new Date(product.createdAt).toLocaleString()}
-                      </>
-                    )}
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
+      <div className="card shadow-lg">
+        <div className="card-header bg-warning text-white text-center">
+          <h2>Szczegóły zamówienia</h2>
         </div>
-      )}
+        <div className="card-body">
+          {order && (
+            <>
+              <h5 className="card-title text-center">
+                ID zamówienia: {order.id}
+              </h5>
+              <ul className="list-group mb-4">
+                <li className="list-group-item">
+                  <strong>Status:</strong> {order.status || "N/A"}
+                </li>
+                <li className="list-group-item">
+                  <strong>Łączna kwota:</strong> $
+                  {order?.totalAmount?.toFixed(2) || "N/A"}
+                </li>
+                <li className="list-group-item">
+                  <strong>Adres wysyłki:</strong>{" "}
+                  {order.shippingAddress || "N/A"}
+                </li>
+                <li className="list-group-item">
+                  <strong>Miasto:</strong> {order.city || "N/A"}
+                </li>
+                <li className="list-group-item">
+                  <strong>Kod pocztowy:</strong> {order.postalCode || "N/A"}
+                </li>
+                <li className="list-group-item">
+                  <strong>Kraj:</strong> {order.country || "N/A"}
+                </li>
+                <li className="list-group-item">
+                  <strong>Numer telefonu:</strong> {order.phoneNumber || "N/A"}
+                </li>
+              </ul>
+              <h4 className="text-center mb-3">Produkty</h4>
+              <div className="table-responsive">
+                <table className="table table-bordered table-striped text-center">
+                  <thead className="table-dark">
+                    <tr>
+                      <th>Nazwa produktu</th>
+                      <th>Ilość</th>
+                      <th>Cena</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {order.products?.map((product, index) => {
+                      const productDetails = getProductDetails(
+                        product.productId
+                      );
+                      return (
+                        <tr key={index}>
+                          <td>
+                            {productDetails
+                              ? productDetails.title
+                              : `ID: ${product.productId}`}
+                          </td>
+                          <td>{product.quantity}</td>
+                          <td>
+                            ${productDetails ? productDetails.price : "N/A"}
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            </>
+          )}
+        </div>
+      </div>
     </div>
   );
 };

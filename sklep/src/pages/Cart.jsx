@@ -124,7 +124,7 @@ const Cart = () => {
   if (loading) {
     return (
       <div className="d-flex justify-content-center align-items-center vh-100">
-        <div className="spinner-border text-primary" role="status">
+        <div className="spinner-border text-warning" role="status">
           <span className="sr-only">Ładowanie...</span>
         </div>
       </div>

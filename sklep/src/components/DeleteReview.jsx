@@ -50,7 +50,7 @@ const DeleteReview = ({ userId, productId, isAdmin }) => {
       onClick={handleDelete}
       title="Usuń tę opinię"
     >
-      <i className="bi bi-trash me-1"></i> Usuń opinię
+      <i className="bi bi-trash me-1"></i> Usuń
     </button>
   ) : null;
 };

@@ -5,9 +5,17 @@ const Navbar = () => {
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-light fixed-top">
       <div className="container-fluid">
-        <Link className="navbar-brand" style={{fontFamily:"caveat", fontSize:"30px"}} to="/">
+        <Link
+          className="navbar-brand"
+          style={{ fontFamily: "caveat", fontSize: "30px" }}
+          to="/"
+        >
           blob
-          <img src={"src/images/home/blob (3).svg"} alt={"blob"} style={{top: "10%", left: "60%", height: "50px", width: "50px"}}/>
+          <img
+            src={"src/images/home/blob (3).svg"}
+            alt={"blob"}
+            style={{ top: "10%", left: "60%", height: "50px", width: "50px" }}
+          />
         </Link>
         <button
           className="navbar-toggler"
@@ -33,16 +41,6 @@ const Navbar = () => {
               </Link>
             </li>
             <li className="nav-item">
-              <Link className="nav-link" to="/register">
-                Rejestracja
-              </Link>
-            </li>
-            <li className="nav-item">
-              <Link className="nav-link" to="/login">
-                Logowanie
-              </Link>
-            </li>
-            <li className="nav-item">
               <Link className="nav-link" to="/cart">
                 Koszyk
               </Link>
@@ -50,6 +48,16 @@ const Navbar = () => {
             <li className="nav-item">
               <Link className="nav-link" to="/orders">
                 Zamówienia
+              </Link>
+            </li>
+            <li className="nav-item ms-auto">
+              <Link className="nav-link" to="/register">
+                Rejestracja
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link className="nav-link" to="/login">
+                Logowanie
               </Link>
             </li>
           </ul>
