@@ -1,65 +1,78 @@
-# 📌 Projekt Sklep Internetowy
+# 📌 Online Store Project
 
-## 📖 Opis
-Nasz projekt to nowoczesna aplikacja webowa stworzona przy użyciu technologii React oraz Express. Głównym celem jest dostarczenie interaktywnego interfejsu użytkownika oraz stabilnego backendu opartego na SQLite i Sequelize.
+## 📖 Description
 
-## 🚀 Setup projektu
-Aby uruchomić projekt lokalnie, wykonaj poniższe kroki:
+Our project is a modern web application built using React and Express. The main goal is to provide an interactive user interface alongside a stable backend based on SQLite and Sequelize.
 
-1. Sklonuj repozytorium:
+## 🚀 Project Setup
+
+To run the project locally, follow these steps:
+
+1. Clone the repository:
+
    ```sh
    git clone https://github.com/Maciej-Sitny/Projekt-WDAI.git
    cd Projekt-WDAI/sklep
    ```
-2. Zainstaluj zależności:
+2. Install dependencies:
+
    ```sh
    npm install
    ```
-3. Skonfiguruj plik `.env` (stwórz go w katalogu głównym projektu) i uzupełnij go o wymagane zmienne środowiskowe.
-4. Uruchom aplikację w trybie deweloperskim:
+3. Create a `.env` file in the root directory of the project and add the required environment variables.
+4. Run the application in development mode:
+
    ```sh
    npm run dev
    ```
-5. Aby zbudować aplikację do produkcji:
+5. To build the application for production:
+
    ```sh
    npm run build
    ```
-6. Aby uruchomić podgląd zbudowanej aplikacji:
+6. To preview the built application:
+
    ```sh
    npm run preview
    ```
 
-## 🌐 Uruchomienie serwera backend
-Backend projektu znajduje się w folderze `api`. Aby go uruchomić, wykonaj następujące kroki:
+## 🌐 Running the Backend Server
 
-1. Przejdź do katalogu `api`:
+The backend is located in the `api` folder. To start it, follow these steps:
+
+1. Navigate to the `api` directory:
+
    ```sh
-   cd Projekt-WDAI\sklep\src\api
+   cd Projekt-WDAI/sklep/src/api
    ```
-2. Zainstaluj wszystkie zależności:
+2. Install all dependencies:
+
    ```sh
    npm install
    ```
-3. Uruchom serwer backendu:
+3. Start the backend server:
+
    ```sh
    npm start
    ```
 
-## 🛠 Użyte technologie i biblioteki
-Projekt został stworzony przy użyciu następujących technologii:
+## 🛠 Technologies and Libraries Used
 
-- **Frontend:** React, React Router, Bootstrap
-- **Backend:** Express, Sequelize, SQLite
-- **Bezpieczeństwo:** JSON Web Token (JWT)
-- **Inne:** Axios, dotenv, CORS
-- **Narzędzia developerskie:** ESLint, Vite
+The project was developed using the following technologies:
 
-## 🎨 Wygląd strony
-Projekt kładzie duży nacisk na estetykę i intuicyjność interfejsu użytkownika. Wykorzystano Bootstrap do stylizacji, dbając o responsywność oraz nowoczesny design.
+* **Frontend:** React, React Router, Bootstrap
+* **Backend:** Express, Sequelize, SQLite
+* **Security:** JSON Web Token (JWT)
+* **Other:** Axios, dotenv, CORS
+* **Dev Tools:** ESLint, Vite
 
-## 👥 Autorzy
-Projekt został stworzony przez:
-- **Igor Piesik**
-- **Maciej Sitny**
----
+## 🎨 UI Design
 
+The project emphasizes a clean and intuitive user interface. Bootstrap was used for styling, ensuring responsiveness and modern design.
+
+## 👥 Authors
+
+This project was developed by:
+
+* **Igor Piesik**
+* **Maciej Sitny**
